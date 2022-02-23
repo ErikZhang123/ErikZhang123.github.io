@@ -1,0 +1,832 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ErikZhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Gan论文总结一、GAN结构GAN主要由两个部分组成： 判别模型D与生成模型G。1.随机噪声通过G生成目标数据，G的目的是尽可能让D判断错误，让D误以为G生成的数据是真实数据2.判别器D估计数据是否来源于真实数据，最大化 “正确分配真实样本和生成样本” 的概率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GAN 学习笔记">
+<meta property="og:url" content="http://example.com/2022/02/04/GAN/index.html">
+<meta property="og:site_name" content="Erik&#39;s blog">
+<meta property="og:description" content="Gan论文总结一、GAN结构GAN主要由两个部分组成： 判别模型D与生成模型G。1.随机噪声通过G生成目标数据，G的目的是尽可能让D判断错误，让D误以为G生成的数据是真实数据2.判别器D估计数据是否来源于真实数据，最大化 “正确分配真实样本和生成样本” 的概率">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/02/04/GAN/bb101d1e251ee00004fb247bc5cf1bcc4216175af39c735a8cbd1c26d617691c.png">
+<meta property="og:image" content="http://example.com/2022/02/04/GAN/17f2cca35e11cc60efffce2d3da3bab2414ea4a2bbb2c4d150a5da885a70ae82.png">
+<meta property="og:image" content="http://example.com/2022/02/04/GAN/3445c850cac677c303156ff592fa3ea8e304fe53a982ba6ef4991803ef5599c0.png">
+<meta property="og:image" content="http://example.com/2022/02/04/GAN/0453f2c1a11286d7a1f48de68de3784b9f4c0d04895ffa4d8c19f2f44df0be1e.png">
+<meta property="og:image" content="http://example.com/2022/02/04/GAN/bb263fb633d6236fa2ec9d0fc17d524332acc62496d4169631bc4e1bd5a8081d.png">
+<meta property="article:published_time" content="2022-02-04T07:39:22.000Z">
+<meta property="article:modified_time" content="2022-02-12T12:27:34.799Z">
+<meta property="article:author" content="ErikZhang">
+<meta property="article:tag" content="GAN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/02/04/GAN/bb101d1e251ee00004fb247bc5cf1bcc4216175af39c735a8cbd1c26d617691c.png">
+  
+  
+  <title>GAN 学习笔记 - Erik&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          <span id="subtitle" title="GAN 学习笔记">
+            
+          </span>
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-02-04 18:39" pubdate>
+          2022年2月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          64 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GAN 学习笔记</h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="Gan论文总结"><a href="#Gan论文总结" class="headerlink" title="Gan论文总结"></a>Gan论文总结</h1><h2 id="一、GAN结构"><a href="#一、GAN结构" class="headerlink" title="一、GAN结构"></a>一、GAN结构</h2><p>GAN主要由两个部分组成： 判别模型D与生成模型G。<br/><br>1.随机噪声通过G生成目标数据，G的目的是尽可能让D判断错误，让D误以为G生成的数据是真实数据<br/><br>2.判别器D估计数据是否来源于真实数据，最大化 “正确分配真实样本和生成样本” 的概率</p>
+<span id="more"></span>
+<h2 id="二、价值函数"><a href="#二、价值函数" class="headerlink" title="二、价值函数"></a>二、价值函数</h2><img src="/2022/02/04/GAN/bb101d1e251ee00004fb247bc5cf1bcc4216175af39c735a8cbd1c26d617691c.png" srcset="/img/loading.gif" lazyload class="" title="[图 13]">
+
+<p>其中，z是一个随机生成的噪声，G是多层感知机表征的可微函数，同样的定义第二个多层感知机D，输出单个标量,即 1或0：表示判别器判定进入的图片是真还是假。</p>
+<p>$D(x)$表示x来源于真实数据的概率，当x的分布完全符合真实数据的分布,即x是真实数据时：$D(x)&#x3D;1$。 因此$ D(G(x))$ 表示G生成的数据被判断为真实数据的概率。</p>
+<h3 id="2-1-价值函数的意义"><a href="#2-1-价值函数的意义" class="headerlink" title="2.1 价值函数的意义"></a>2.1 价值函数的意义</h3><p>对于判别器的价值函数，即 D_V(D,G)而言，最好的判别器就是让  $D(G(z))&#x3D;0$。当 $D(G(z))&#x3D;0$时，即此时$log(1-D(G(z)))&#x3D;0$,那么此时 $V(D,G) &#x3D; E_x{p_{data}}[logD(x)]$ 则 $V(D,G)$最大。<br>因此可以将最优的D* 定义为 $D*_G&#x3D;argmax_DV(G,D)$</p>
+<p>而对于生成器G 而言， G_V(D,G) 就是让其中的 $D( G(z)))$ 尽可能大，则 $1-D(G(z)$)尽可能小。 而在判别器正确分类所有”真“图片的情况下， 最优的生成器G就会让 $V(G,D)$的值最小。</p>
+<p>因此形成了生成器G和判别器D的最大最小博弈。</p>
+<h3 id="2-2-训练过程"><a href="#2-2-训练过程" class="headerlink" title="2.2  训练过程"></a>2.2  训练过程</h3><p>在最大最小博弈的训练过程中，实际上对于两个模型是分开训练的。</p>
+<p>第一步： 训练判别器D: 固定生成器G，先让$V(G,D)$ 最大化。<br/><br>第二步： 固定判别器D, 训练生成器G: 最小化$V(G,D)$<br/><br>其中第一步的过程，在固定生成器G，最大化V(G,D)的过程，实际上是判别器D在评估生成器G所生成的 “假”数据 P_G 与 真实数据 P_data 之间的差距。<br/><br>我们的目的往往是要得到最优的生成器G*, 因此可以将G* 看作是让V(G,D)最小的G。即 $G*&#x3D;argmin_GV(G,D)$</p>
+<h2 id="三、"><a href="#三、" class="headerlink" title="三、"></a>三、</h2><p>论文中度量生成分布P_G 与真实分布 P_data 之间差异的方法是JS散度,而JS散度实际上是通过KL散度所构建的。KL散度可以用最大似然估计进行推导。<br>其似然函数为：<br>$$L &#x3D; \prod_{i&#x3D;1}^{m} P_G(x^i;\theta)$$<br>其中 x_i 为真实样本， $\theta$是生成器的参数(w,b)。 该公式的意义是： 当生成器的参数$\theta$固定后，生成的结果分布与 $x_i$ 分布相同的概率。<br/><br>因此最优生成器的目的就是让生成的 “假”样本分布与真实样本的分布无限接近。即： P_G&#x3D;&#x3D; P_data，也可以理解为：生成器所生成的数据有很大概率是一个真实数据。<br/><br>L作为m 个真实样本在 $P_G$ 中出现的概率，因此我们希望在$P_G$的情况下，这m个样本尽可能多的出现,由此可以通过用最大似然估计将L最大化，从而求出 $\theta^*$。</p>
+<img src="/2022/02/04/GAN/17f2cca35e11cc60efffce2d3da3bab2414ea4a2bbb2c4d150a5da885a70ae82.png" srcset="/img/loading.gif" lazyload class="" title="[图 3]">
+
+
+<p>当期望展开后发现最大化 $\theta$实际上就是求其最小化的KL散度。</p>
+<h2 id="四、证明当P-G-x3D-x3D-P-data的时候-最优生成器G-是可以达到的"><a href="#四、证明当P-G-x3D-x3D-P-data的时候-最优生成器G-是可以达到的" class="headerlink" title="四、证明当P_G &#x3D;&#x3D; P_data的时候 最优生成器G* 是可以达到的"></a>四、证明当P_G &#x3D;&#x3D; P_data的时候 最优生成器G* 是可以达到的</h2><h3 id="4-1-最优判别器-D-，假设其有最优解并证明"><a href="#4-1-最优判别器-D-，假设其有最优解并证明" class="headerlink" title="4.1 最优判别器: D* ，假设其有最优解并证明"></a>4.1 最优判别器: D* ，假设其有最优解并证明</h3><p>原论文中价值函数可以写为在x上的积分。也就是说都符合x的分布（因为最后的G(Z) 生成的数据实际上接近真实分布）。将数学期望展开成积分形式，$D* &#x3D; argmax V(G,D)$,即要求积分最大值，而积分最大值可以转换为求被积函数最大值。</p>
+<img src="/2022/02/04/GAN/3445c850cac677c303156ff592fa3ea8e304fe53a982ba6ef4991803ef5599c0.png" srcset="/img/loading.gif" lazyload class="" title="[图 4]">
+
+<p>在被积函数中，因为分布和生成器已经固定，所以只有D(x) 作为变量。 因此令D(x)为y，则可以等同于，其中a，b视为概率数值（常数）。 然后通过求二阶导数判断是否成立</p>
+
+
+<p>由于一阶导数大于0，二阶导数小于0，因此可以判断此时  $a&#x2F;(a+b)$是极大值。 注意，这里的a是P_data(x) , b是P_G(x) 概率分布。因此<br>$$V(G,D) &lt;&#x3D; P_{data} &#x2F; (P_{data}(x)+P_G(x))$$</p>
+<h3 id="4-2-最优生成器-G"><a href="#4-2-最优生成器-G" class="headerlink" title="4.2 最优生成器: G*"></a>4.2 最优生成器: G*</h3><p>假设最优生成器G* 存在，即此时 P_G&#x3D;&#x3D;P_data。 将其带入D* ,会发现 $D*(G*)&#x3D;1&#x2F;2$ 此时判别器D产生困惑，分不清真假数据，概率都是0.5。<br>根据前面的D*推导，我们可以得到训练标准C(G)。</p>
+<img src="/2022/02/04/GAN/0453f2c1a11286d7a1f48de68de3784b9f4c0d04895ffa4d8c19f2f44df0be1e.png" srcset="/img/loading.gif" lazyload class="" title="[图 12]">
+
+<p>通过反向验证（即设P_G&#x3D;P_Data） 将 $D * G &#x3D; 1&#x2F;2$ 带入 V(G,D*)可以发现$-log4$是全局最小的候选。<br>在每个积分项中加上或减去log2 * 概率密度的技巧，让C(G)含log2，并将其转换成JS散度形式。并且概率密度函数在积分域上的积分为1，所以最后可以转化为</p>
+<img src="/2022/02/04/GAN/bb263fb633d6236fa2ec9d0fc17d524332acc62496d4169631bc4e1bd5a8081d.png" srcset="/img/loading.gif" lazyload class="" title="[图 8]">
+
+<p>可以发现，此时第二、第三项其实就是KL散度，而KL散度非负，所以-log4是全局最小值。同时可以讲C(G)写成</p>
+<p>$$ C(G)&#x3D;-log4+KL(p_{data}| \frac{p_{data}+p_G}{2}) + KL(p_G|\frac{p_{data}+p_G}{2})$$</p>
+<p>因为KL散度的不对称性，所以此时$KL(p_{data} | (P_{data}+P_G)&#x2F;2)$ 中的左右两项是不能交换的，但如果同时加上另一项$KL(p_{G} | (P_{data}+P_G)&#x2F;2)$ ,两者的和可以变为对称项。<br>这两项的和就可以表示为JS散度</p>
+<p>$$JDS(P||D) &#x3D; \frac{1}{2}D(P||M)+\frac{1}{2}D(Q||M) ; 其中 M&#x3D;\frac{1}{2}(P+Q)$$</p>
+<p>因此当且仅当 P_G &#x3D; P_data 的时候，可以达到 训练标准 $C(G)&#x3D;maxV(G,D)$ 的全局最小值，因为这时候P_G与P_data的 JS散度$[JSD(P_{data}(x) || P_G(x))]&#x3D;&#x3D;0$<br>因此可以将训练标准 C(G) 写成：<br>$$ C(G)&#x3D;-log4+2*JSD(p_{data}|p_G)$$</p>
+<h2 id="五、训练过程"><a href="#五、训练过程" class="headerlink" title="五、训练过程"></a>五、训练过程</h2><h3 id="5-1-生成器G的损失函数"><a href="#5-1-生成器G的损失函数" class="headerlink" title="5.1 生成器G的损失函数"></a>5.1 生成器G的损失函数</h3><p>损失函数训练时往往是求最小值，所以对于生成器来说是求$argmaxV(G,D)$的最小值，而判别器要求$V(G,D)$的最大值，可将其转换成$-V(G,D)$的最小值，这样可以将两个损失函数都转化为求最小值问题。</p>
+<p>生成器训练： 给定D* 将 损失函数$L(G) &#x3D; argmaxV(G,D)$.因为在$V(G,D)$中只有第二项涉及到G，因此在求导后损失函数转为：</p>
+<p>$$ argmin\hat{V} &#x3D;argmin \frac{1}{m} \sum_{i&#x3D;1}^mlog( 1-D(G(z^i)) )$$<br>可以将其中的1-提出变为负号，即loss是<br>$$ argmin\hat{V} &#x3D;argmin -\frac{1}{m} \sum_{i&#x3D;1}^mlog(D(G(z^i)) )$$</p>
+<h3 id="5-2-判断器D的损失函数"><a href="#5-2-判断器D的损失函数" class="headerlink" title="5.2 判断器D的损失函数"></a>5.2 判断器D的损失函数</h3><p>对给定的 G* ,将生成器G的参数固定， 并将 $-V(G,D)$ 作为损失函数，使用一些常见的优化器进行训练。<br>由于数学期望无法真正求得，所以大数定理用m个样本来求近似表达式。</p>
+<p>1.对于判别器而言要求以下V的最大值</p>
+<p>$$argmax \hat{V}&#x3D;\frac{1}{m} \sum_{i&#x3D;1}^mlogD(x^i)+\frac{1}{m} \sum_{i&#x3D;1}^mlog(1-D(\hat{x}^i))$$</p>
+<p>采用等价形式训练。将逼近 $-\hat{V}$ 作为损失函数，将P_data(X) 作为正样本 $x$，P_G(x)作为负样本 $\hat{x}$。可以得到L</p>
+<p>$$argmin L &#x3D; -\frac{1}{m} \sum_{i&#x3D;1}^mlogD(x^i)-\frac{1}{m}\sum_{i&#x3D;1}^mlog(1-D(\hat{x}^i))$$</p>
+<p>注意，训练过程中不能完整优化D，会导致过拟合。一般在k次优化D之后优化一次G。</p>
+<p>附上手写数字训练代码：</p>
+<p>首先是判别器模型：<br>    # Erik pattern<br>    import tensorflow as tf<br>    import numpy as np<br>    from tensorflow.keras.layers import Dense<br>    from tensorflow.keras import Model<br>    import tensorflow.keras.layers as layers<br>    class discrimination_model(Model):<br>        def <strong>init</strong>(self):<br>            super(discrimination_model, self).<strong>init</strong>()</p>
+<pre><code class="hljs">    def  get_d_model(self):
+    model = tf.keras.Sequential([
+        layers.Conv2D(64, (5,5) ,padding=&#39;same&#39;, input_shape=(28,28,1),activation=&#39;tanh&#39;),
+        layers.MaxPooling2D(pool_size=(2,2)),
+        layers.Conv2D(128,(5,5),activation=&#39;tanh&#39;),
+        layers.MaxPooling2D(pool_size=(2,2)),
+        layers.Flatten(),
+        layers.Dense(1024,activation=&#39;tanh&#39;),
+        layers.Dense(1,activation=&#39;sigmoid&#39;)
+    ])
+    return model
+</code></pre>
+<p>然后是生成器器模型<br>    # Erik pattern<br>    import tensorflow as tf<br>    import numpy as np<br>    from tensorflow.keras import Model<br>    from tensorflow.keras.layers import Dense</p>
+<pre><code class="hljs">class generator_model(Model):
+    def __init__(self):
+        super(generator_model,self).__init__()
+        self.d1 = Dense(input_dim=100,units=1024,activation=&#39;tanh&#39;)
+        self.d2 = Dense(input_dim=1024, units=128*7*7)
+        self.d3 = tf.keras.layers.BatchNormalization()
+        self.d4 = tf.keras.layers.Activation(&#39;tanh&#39;)
+        self.d5 = tf.keras.layers.Reshape( (7,7,128), input_shape=(128*7*7,) )
+        self.d6 = tf.keras.layers.UpSampling2D(size=(2,2))
+        self.d7 = tf.keras.layers.Conv2D(64, (5,5), padding=&#39;same&#39;,activation=&#39;tanh&#39;)
+        self.d8 = tf.keras.layers.UpSampling2D(size=(2,2))
+        self.d9 = tf.keras.layers.Conv2D(1, (5,5), padding=&#39;same&#39;,activation=&#39;tanh&#39;)
+
+    def call(self,x):
+        y = self.d1(x)
+        y = self.d2(y)
+        y = self.d3(y)
+        y = self.d4(y)
+        y = self.d5(y)
+        y = self.d6(y)
+        y = self.d7(y)
+        y = self.d8(y)
+        y = self.d9(y)
+        return y
+    # 固定d，并将g和d拼接训练
+    def generator_containing_discriminator(self, g,d):
+        model = tf.keras.Sequential()
+        model.add(g)
+        d.trainable = False
+        model.add(d)
+        return model
+</code></pre>
+<p>最后是训练过程</p>
+<pre><code class="hljs"># Erik pattern
+import math
+import D_model as discrimination
+import Generator_model as generator
+import tensorflow as tf
+import tensorflow.keras.datasets.mnist as minist
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+def train(BATCH_SIZE):
+    (xtrain, ytrain), (xtest, ytest) = minist.load_data()
+    xtrain = (xtrain.astype(np.float32 ) - 127.5) / 127.5
+
+    xtrain = xtrain[:,:,:,None]  # 增加xtrain的维度使其能顺利喂入神经网络
+    xtest = xtest[:,:,:,None]
+
+    #生成模型
+    di = discrimination.discrimination_model()
+    d = di.get_d_model()
+    g = generator.generator_model()
+    d_on_g = g.generator_containing_discriminator(g=g,d=d)
+    #定义模型的优化器
+    d_op = tf.keras.optimizers.SGD(lr=0.01,momentum=0.9,nesterov=True)
+    g_op = tf.keras.optimizers.SGD(lr=0.01,momentum=0.9,nesterov=True)
+
+    # 将g先compile
+    g.compile(loss=&#39;binary_crossentropy&#39;,optimizer=&#39;SGD&#39;)
+    #冻结d
+    d_on_g.compile(loss=&#39;binary_crossentropy&#39;,optimizer=g_op)
+    #将d解冻
+    d.trainable=True
+    d.compile(loss=&#39;binary_crossentropy&#39;,optimizer=d_op)
+
+    for epoch in range(30):
+        print(&quot;Epoch is : &quot; , epoch)
+        print(&quot;Number of batches&quot;, int(xtrain.shape[0] / BATCH_SIZE))
+        for batch in range( int(xtrain.shape[0] / BATCH_SIZE)):
+            noise = np.random.uniform(-1,1,size=(BATCH_SIZE,100))
+            # 从真实数据xtrain中取出batch个图片
+            image_bach = xtrain[batch*BATCH_SIZE:(batch+1)*BATCH_SIZE]  
+
+            # 根据输入的随机噪声输出图片
+            generated_image = g.predict(noise,verbose=0) 
+
+            # 每经过100次迭代输出一张生成的图片
+            if batch % 100 == 0:
+                image = combine_images(generated_image)
+                image = image * 127.5 + 127.5
+                Image.fromarray(image.astype(np.uint8)).save(
+                    &quot;./GAN/&quot; + str(epoch) + &quot;_&quot; + str(batch) + &quot;.png&quot;)
+
+            # 将真实图片与生成图片通过通道的方式组合，真实图片先，生成图片后
+            x = np.concatenate( (image_bach,generated_image) )
+
+            # 生成对应标签
+            y = np.array( [1] * BATCH_SIZE + [0] * BATCH_SIZE)
+            d_loss = d.train_on_batch(x,y)
+
+            # d.fit(x, y, batch_size=BATCH_SIZE,epochs=1) 在此情况下由于要对数据集进行修改，数据集并不是封闭的，所以不能用fit
+            # print(&quot;batch %d d_loss : %f&quot; % (batch, d_loss))
+
+            noise = np.random.uniform(-1,1,size=(BATCH_SIZE,100))
+            d.trainable=False
+            # 冻结D，由G通过noise输出生成的图片进入D
+            # 将生成的标签标记为真 ！ 这里的原因是：标记为真形成的误差就会大，生成器权值更新也会大
+            # 如果标记为假的话，那判别器实际上大概率能正确判断，造成最后输出的误差会很小，权值更新也就小了
+            y2 = np.ones(BATCH_SIZE)
+            g_loss = d_on_g.train_on_batch(noise , y2)
+
+            # d_on_g.fit(noise,y2,batch_size=BATCH_SIZE,epochs=1)
+
+            d.trainable = True
+            # print(&quot;batch %d g_loss : %f&quot; % (batch, g_loss))
+            # 每100次迭代保存一次生成器和判别器的权重
+            if batch % 100 == 9:
+                g.save_weights(&#39;generator&#39;, True)
+                d.save_weights(&#39;discriminator&#39;, True)
+
+def combine_images(generated_images):
+    #生成图片拼接
+    num = generated_images.shape[0]
+    width = int(math.sqrt(num))
+    height = int(math.ceil(float(num)/width))
+    shape = generated_images.shape[1:3]
+    image = np.zeros((height*shape[0], width*shape[1]),
+                    dtype=generated_images.dtype)
+    for index, img in enumerate(generated_images):
+        i = int(index/width)
+        j = index % width
+        image[i*shape[0]:(i+1)*shape[0], j*shape[1]:(j+1)*shape[1]] = \
+            img[:, :, 0]
+    return image
+train(32)
+</code></pre>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GAN/">#GAN</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GAN 学习笔记</div>
+      <div>http://example.com/2022/02/04/GAN/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ErikZhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年2月4日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/02/23/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(%E4%B8%80)/" title="SpringBoot学习笔记(一)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot学习笔记(一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var title = subtitle.title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
