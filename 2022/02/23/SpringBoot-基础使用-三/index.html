@@ -16,21 +16,21 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SpringBoot-项目基本配置 学习笔记（一）一、使用springboot提供的初始化器New Module -&gt; Spring Initializer -&gt; default -&gt; 然后按照显示的内容自定义在创建的时候，在国内可以在Custom处使用 https:&#x2F;&#x2F;start.springboot.io 这个地址是一个创建向导，也可以通过浏览器访问。Springboot 内">
+    <meta name="description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringBoot学习笔记(一)">
-<meta property="og:url" content="http://example.com/2022/02/23/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(%E4%B8%80)/index.html">
+<meta property="og:title" content="SpringBoot-基础使用(三)-数据库相关">
+<meta property="og:url" content="http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="SpringBoot-项目基本配置 学习笔记（一）一、使用springboot提供的初始化器New Module -&gt; Spring Initializer -&gt; default -&gt; 然后按照显示的内容自定义在创建的时候，在国内可以在Custom处使用 https:&#x2F;&#x2F;start.springboot.io 这个地址是一个创建向导，也可以通过浏览器访问。Springboot 内">
+<meta property="og:description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-23T09:17:29.000Z">
-<meta property="article:modified_time" content="2022-02-23T12:13:16.772Z">
+<meta property="article:published_time" content="2022-02-23T12:59:26.000Z">
+<meta property="article:modified_time" content="2022-02-23T13:20:29.296Z">
 <meta property="article:author" content="ErikZhang">
-<meta property="article:tag" content="SpringBoot">
+<meta property="article:tag" content="Springboot">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>SpringBoot学习笔记(一) - Erik&#39;s blog</title>
+  <title>SpringBoot-基础使用(三)-数据库相关 - Erik&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -186,7 +186,7 @@
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
-          <span id="subtitle" title="SpringBoot学习笔记(一)">
+          <span id="subtitle" title="SpringBoot-基础使用(三)-数据库相关">
             
           </span>
         </div>
@@ -198,7 +198,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-02-23 20:17" pubdate>
+        <time datetime="2022-02-23 23:59" pubdate>
           2022年2月23日 晚上
         </time>
       </span>
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          2.5k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          19 分钟
+          21 分钟
         
       </span>
     
@@ -259,93 +259,110 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SpringBoot学习笔记(一)</h1>
+            <h1 style="display: none">SpringBoot-基础使用(三)-数据库相关</h1>
             
             <div class="markdown-body">
               
-              <h1 id="SpringBoot-项目基本配置-学习笔记（一）"><a href="#SpringBoot-项目基本配置-学习笔记（一）" class="headerlink" title="SpringBoot-项目基本配置 学习笔记（一）"></a>SpringBoot-项目基本配置 学习笔记（一）</h1><h2 id="一、使用springboot提供的初始化器"><a href="#一、使用springboot提供的初始化器" class="headerlink" title="一、使用springboot提供的初始化器"></a>一、使用springboot提供的初始化器</h2><p>New Module -&gt; Spring Initializer -&gt; default -&gt; 然后按照显示的内容自定义在创建的时候，在国内可以在Custom处使用 <a target="_blank" rel="noopener" href="https://start.springboot.io/">https://start.springboot.io</a> 这个地址是一个创建向导，也可以通过浏览器访问。<br><br>Springboot 内嵌了tomcat,Jetty,等服务器。并且提供了starter启动器依赖，在starter中实际上就将常用的一些对象进行了创建和配置，具体会在之后的文章讨论。<br><br>springboot尽量自动的配置spring和第三方库，减少人工配置的压力。它会将第三方库中的对象都配置好，放到容器中。<br><br>提供 metrics, health checks and externalized configuration 功能, 即： <br><br>        度量 , 健康检查（工作状态是否正常） ， 外部化配置（就是项目代码之外的配置，比如propoties文件）</p>
-<span id="more"></span>
-<h2 id="二、springboot的项目结构"><a href="#二、springboot的项目结构" class="headerlink" title="二、springboot的项目结构"></a>二、springboot的项目结构</h2><p>Springboot 主要是由src&#x2F;main下的java和resources文件夹构成的，他们分别存放的主要内容如下。</p>
+              <h1 id="SpringBoot-基础使用-三-数据库相关"><a href="#SpringBoot-基础使用-三-数据库相关" class="headerlink" title="SpringBoot-基础使用(三) 数据库相关"></a>SpringBoot-基础使用(三) 数据库相关</h1><h2 id="一、Mybatis的使用"><a href="#一、Mybatis的使用" class="headerlink" title="一、Mybatis的使用"></a>一、Mybatis的使用</h2><ol>
+<li><p>在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动<br> mybatis-spring 依赖，来继承mybatis</p>
+</li>
+<li><p>创建dao接口和mapper文件, 创建方法和Mybatis一样</p>
+<p><strong>注意：mapper文件要和接口文件名字一致</strong></p>
 <ol>
-<li><p>java: <br></p>
-<ol>
-<li>SpringBootApplication 类， 作为Springboot项目的启动类，启动其中的main方法后相当于启动了一个tomcat服务器。</li>
-<li>运行SpringBootApplication的Main方法以后，在控制台会显示运行信息。</li>
-</ol>
-</li>
-<li><p>resources : <br></p>
-<ol>
-<li>static : 放置静态资源文件</li>
-<li>tamplates: 放置模版文件，如果项目中没有使用模版文件，可以删除</li>
-<li>application.properties: springboot 重要的配置文件，也可以使用yml格式</li>
-</ol>
-</li>
-<li><p>.yml文件与.properties配置文件的区别：格式不同 ， 但是都是使用 (K,V)格式来存储数据</p>
-<ol>
-<li><p>.yml  <br><br> 使用冒号 “**:**”  来表示K与V的对应关系，更有层次。例如：</p>
-<pre><code class="hljs"> server:
-     port: 8083
-     servlet:
-         context-path: /myboot2
+<li><p>方法1: 接口上添加@Mapper注解</p>
+<pre><code class="hljs">/**SpringBoot中需要使用Mapper注解来表示这个接口是dao接口，要创建这个接口的代理对象*
+* @Mapper 的缺点在于 ， 如果有很多接口，那么每个接口都需要加这个注解，比较麻烦
+* 可以使用 @MapperScan，放在启动类之上
+* */
+//注意：配置文件的名字要和接口的名字一致
+
+//@Mapper
+public interface studentInfo &#123;
+    Student selectById(@Param(&quot;stuId&quot;)Integer id);
+&#125;
 </code></pre>
 </li>
-<li><p>.properties <br><br>使用等号 “**&#x3D;**” 来表示</p>
-<pre><code class="hljs">server.port=8082
+<li><p>方法2: 在启动类之上使用 <em>@MapperScan</em></p>
+<pre><code class="hljs">@SpringBootApplication
+//在启动类使用@MapperScan注解，可以扫描包下的所有mapper.basePackages 是dao所在的包名
+//可以用数组的形式，指定多个包， &#123;&quot;b1&quot;,&quot;b2&quot;,...&#125;
+@MapperScan(basePackages=&quot;ormmysql11.ormmysql11.dao&quot;)
+public class OrmMysql11Application &#123;
+    public static void main(String[] args) &#123;
+        SpringApplication.run(OrmMysql11Application.class, args);
+    &#125;
+&#125;
 </code></pre>
 </li>
-</ol>
-</li>
-</ol>
-<h2 id="三、-Springboot项目的application配置文件内容"><a href="#三、-Springboot项目的application配置文件内容" class="headerlink" title="三、 Springboot项目的application配置文件内容"></a>三、 Springboot项目的application配置文件内容</h2><p>Springboot 的一些配置，比如访问的根目录，使用端口等都可以在application文件下配置<br><br>配置文件的<strong>必须是application</strong><br><br>文件扩展名可以是 .properties <strong>(k&#x3D;v)</strong> 或者 yml <strong>(k:v)</strong> 格式<br><br>因此可以是 application.properties 或者 application.yml，但是默认情况下优先使用.properties。即如果两种格式文件同时出现，会优先使用properties。</p>
-<ol>
-<li><p>设置端口号</p>
-<pre><code class="hljs"> server.port=8082
+<li><p>方法三: 如果dao和mapper文件不在一个包下</p>
+<p>可以将mapper文件放到resources目录下，这样将java文件和mapper文件分离。更清晰.</p>
+<p>在application.properties 文件中指定mapper位置</p>
+<pre><code class="hljs"> mybatis.mapper-locations=classpath:mapper/*.xml 
 </code></pre>
-</li>
-<li><p>设置访问的上下文路径 contextpath </p>
-<pre><code class="hljs"> server.servlet.context-path=/myboot
-</code></pre>
-<p> 如果此时controller中的访问路径是&#x2F;hello , 则需要浏览器在访问的时候使用<em><a href="http://localhost:port/myboot/hello">http://localhost:port/myboot/hello</a></em> 这样的形式来访问</p>
-</li>
-<li><p>多环境配置:  可以在resources中创建多个环境文件，以便于在 开发&#x2F;测试&#x2F;用户使用环境中切换</p>
-<pre><code class="hljs"> 文件名称格式: 
- application-环境名称.properties
- 或
- application-环境名称.yml
-</code></pre>
-<p> 并且在 application文件，这里暂称为<em>主配置文件</em> , 中配置属性。</p>
-<pre><code class="hljs"> 假设此时开发环境的配置文件为：application-dev.properties
- 那么对应在application文件中就要设置
- spring.profiles.active=dev
- 此时springboot会去找 application+&quot;-&quot;+dev 这个配置文件。
-</code></pre>
-</li>
-<li><p>从配置文件中获取数据</p>
-<ol>
-<li><p>在java类中可以在要复制的变量上方使用 <strong>@Value(“${key}”)</strong> 从配置文件中获取数据</p>
-</li>
-<li><p>可以通过配置文件为java对象的属性赋值，这样有很多值的时候不用一个个赋值。<br>在配置文件中找到要获取的信息的前缀，然后框架会将 <strong>前缀.属性名</strong>的值拿出来，和对象中的<strong>属性名</strong>进行比较，给相同的赋值.比如：</p>
-<pre><code class="hljs">  @Component
-  @ConfigurationProperties(prefix = &quot;school&quot;) //设置前缀，前缀的默认是空
-  //在配置文件中配置的时候，
-  public class School &#123;
-      private String name;
-      private String website;
-  &#125;
-  此时配置文件中配置了school对象的属性信息
-  school.name = USYD
-  school.website = www.baidu.com
-</code></pre>
-</li>
-<li><p>要使用注解时候，需要在pom加入依赖， 处理ConfigurationProperties有关的元数据</p>
-<pre><code class="hljs"> &lt;dependency&gt;
-     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-     &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
-     &lt;optional&gt; true&lt;/optional&gt;
- &lt;/dependency&gt;
+<p>在resources 目录下mapper文件夹中所有的xml文件<br>（有时候在target目录下会丢失配置文件，在maven中配置resources读取所有文件）</p>
+<pre><code class="hljs">&lt;resources&gt;
+    &lt;resource&gt;
+        &lt;directory&gt;src/main/resources&lt;/directory&gt;
+        &lt;includes&gt;
+            &lt;include&gt;**/*.*&lt;/include&gt;
+        &lt;/includes&gt;
+    &lt;/resource&gt;
+&lt;/resources&gt;
 </code></pre>
 </li>
 </ol>
+</li>
+<li><p>在pom文件中配置resources，读取所有xml文件，或者使用上面方法三中的配置<br> <resources><br>             <resource><br>                 <directory>src&#x2F;main&#x2F;java</directory><br>                 <includes><br>                     <include>**&#x2F;*.xml</include><br>                 </includes><br>             </resource><br> </resources></p>
+</li>
+<li><p>在application.properties 中配置数据库</p>
+<pre><code class="hljs"> #配置数据库
+ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+ spring.datasource.url=
+ spring.datasource.username=
+ spring.datasource.password=
+</code></pre>
+</li>
+<li><p>设置开启日志,有很多日志的格式，选取需要的类。在application.properties中配置</p>
+<pre><code class="hljs"> mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+</code></pre>
+</li>
+</ol>
+<h2 id="二、SpringBoot中事务的实现"><a href="#二、SpringBoot中事务的实现" class="headerlink" title="二、SpringBoot中事务的实现"></a>二、SpringBoot中事务的实现</h2><ol>
+<li><p>在业务方法Service实现类上加上 <em>@Transaction</em>，加入注解以后，让方法有事务功能。</p>
+<pre><code class="hljs">/*@Transactional 表示方法有事务支持，如果不设置属性，默认使用数据库的隔离级别 REQUIRED 传播行为
+                 ： 超时时间 -1
+                 如果抛出异常，则回滚事务
+ **/
+ @Transactional
+ @Override
+ public int addStudent(Student student) &#123;
+     System.out.println(&quot;插入业务执行了&quot;);
+     int rows = studentMapper.insert(student);
+     System.out.println(&quot;执行sql语句&quot;);
+     //抛出一个runtime exception， 为了回滚事务
+     //int n = 10/0;
+     return rows;
+ &#125;
+</code></pre>
+</li>
+<li><p>在主启动类上面 加入 <em>@EnableTransactionManager</em></p>
+</li>
+<li><p>Mybatis逆向工程插件</p>
+<pre><code class="hljs"> mybatis代码自动生成插件
+ &lt;plugin&gt;
+     &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+     &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+     &lt;version&gt;1.4.0&lt;/version&gt;
+     &lt;configuration&gt;
+         指定配置文件，放在项目的根目录之下，与src平级
+         &lt;configurationFile&gt;GeneratorMapper.xml&lt;/configurationFile&gt;
+         &lt;verbose&gt;true&lt;/verbose&gt;
+         &lt;overwrite&gt;true&lt;/overwrite&gt;
+     &lt;/configuration&gt;
+ &lt;/plugin&gt;
+</code></pre>
+</li>
+<li><p>使用了Mybatis逆向工程，配置文件信息在GeneratorMapper中查看</p>
 </li>
 </ol>
 
@@ -380,7 +397,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/SpringBoot/">#SpringBoot</a>
+        <a href="/tags/Springboot/">#Springboot</a>
       
     </div>
   
@@ -392,8 +409,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SpringBoot学习笔记(一)</div>
-      <div>http://example.com/2022/02/23/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(%E4%B8%80)/</div>
+      <div>SpringBoot-基础使用(三)-数据库相关</div>
+      <div>http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/</div>
     </div>
     <div class="license-meta">
       
@@ -439,8 +456,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/02/04/GAN/" title="GAN 学习笔记">
-                        <span class="hidden-mobile">GAN 学习笔记</span>
+                      <a href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8(%E4%BA%8C)/" title="SpringBoot-基础使用(二)">
+                        <span class="hidden-mobile">SpringBoot-基础使用(二)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
