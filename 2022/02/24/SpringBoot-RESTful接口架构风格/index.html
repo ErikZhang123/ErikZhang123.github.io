@@ -16,21 +16,21 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
+    <meta name="description" content="一、接口架构风格 ： RESTful这里的接口指的是API，application Programming Interface 。 比如函数，http接口。开发人员可以通过接口来访问或调用一些已经开发好的函数功能，但是无需访问源码，也无需了解工作原理.比如：servlet，controller的url实际上就可以视为一个接口 http:&#x2F;&#x2F;localhost:9002&#x2F;mytransaction&#x2F;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringBoot-基础使用(三)-数据库相关">
-<meta property="og:url" content="http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/index.html">
+<meta property="og:title" content="SpringBoot--RESTful接口架构风格">
+<meta property="og:url" content="http://example.com/2022/02/24/SpringBoot-RESTful%E6%8E%A5%E5%8F%A3%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
+<meta property="og:description" content="一、接口架构风格 ： RESTful这里的接口指的是API，application Programming Interface 。 比如函数，http接口。开发人员可以通过接口来访问或调用一些已经开发好的函数功能，但是无需访问源码，也无需了解工作原理.比如：servlet，controller的url实际上就可以视为一个接口 http:&#x2F;&#x2F;localhost:9002&#x2F;mytransaction&#x2F;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-23T12:59:26.000Z">
-<meta property="article:modified_time" content="2022-02-23T13:20:29.296Z">
+<meta property="article:published_time" content="2022-02-24T00:27:20.000Z">
+<meta property="article:modified_time" content="2022-02-24T01:39:46.869Z">
 <meta property="article:author" content="ErikZhang">
-<meta property="article:tag" content="Springboot">
+<meta property="article:tag" content="RESTful">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>SpringBoot-基础使用(三)-数据库相关 - Erik&#39;s blog</title>
+  <title>SpringBoot--RESTful接口架构风格 - Erik&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -186,7 +186,7 @@
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
-          <span id="subtitle" title="SpringBoot-基础使用(三)-数据库相关">
+          <span id="subtitle" title="SpringBoot--RESTful接口架构风格">
             
           </span>
         </div>
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-02-23 23:59" pubdate>
-          2022年2月23日 晚上
+        <time datetime="2022-02-24 11:27" pubdate>
+          2022年2月24日 上午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          2.2k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          21 分钟
+          19 分钟
         
       </span>
     
@@ -259,110 +259,80 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SpringBoot-基础使用(三)-数据库相关</h1>
+            <h1 style="display: none">SpringBoot--RESTful接口架构风格</h1>
             
             <div class="markdown-body">
               
-              <h1 id="SpringBoot-基础使用-三-数据库相关"><a href="#SpringBoot-基础使用-三-数据库相关" class="headerlink" title="SpringBoot-基础使用(三) 数据库相关"></a>SpringBoot-基础使用(三) 数据库相关</h1><h2 id="一、Mybatis的使用"><a href="#一、Mybatis的使用" class="headerlink" title="一、Mybatis的使用"></a>一、Mybatis的使用</h2><ol>
-<li><p>在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动<br> mybatis-spring 依赖，来继承mybatis</p>
-</li>
-<li><p>创建dao接口和mapper文件, 创建方法和Mybatis一样</p>
-<p><strong>注意：mapper文件要和接口文件名字一致</strong></p>
+              <h1 id="一、接口架构风格-：-RESTful"><a href="#一、接口架构风格-：-RESTful" class="headerlink" title="一、接口架构风格 ： RESTful"></a>一、接口架构风格 ： RESTful</h1><p>这里的接口指的是API，application Programming Interface 。 比如函数，http接口。开发人员可以通过接口来访问或调用一些<br>已经开发好的函数功能，但是无需访问源码，也无需了解工作原理.<br>比如：servlet，controller的url实际上就可以视为一个接口</p>
+<pre><code class="hljs">http://localhost:9002/mytransaction/addStudent?name=zhangsan&amp;age=29
+</code></pre>
+<p>架构风格： 指接口组织的方式，即接口的格式.</p>
+<h1 id="二、REST的意义"><a href="#二、REST的意义" class="headerlink" title="二、REST的意义"></a>二、REST的意义</h1><p>REST：Representational State Transfer，即 <em>表现层状态转移</em> ，它 是一种架构设计风格，并非强制。</p>
+<p>它是客户端和服务器交互时的架构理念和设计原则。基于REST的风格更简洁，更有层次。<br>RESTful 实际上就是使用 <strong>url</strong> 表示资源，使用 <strong>http动作</strong> 来 <strong>操作资源</strong></p>
+<pre><code class="hljs">表现层就是视图层，通过视图页面显示操作结果
+状态： 指对资源的操作，导致资源的变化
+  
+</code></pre>
+<h1 id="三、REST中的要素"><a href="#三、REST中的要素" class="headerlink" title="三、REST中的要素"></a>三、REST中的要素</h1><p>即如何使用REST表示资源 以及 对资源的操作</p>
 <ol>
-<li><p>方法1: 接口上添加@Mapper注解</p>
-<pre><code class="hljs">/**SpringBoot中需要使用Mapper注解来表示这个接口是dao接口，要创建这个接口的代理对象*
-* @Mapper 的缺点在于 ， 如果有很多接口，那么每个接口都需要加这个注解，比较麻烦
-* 可以使用 @MapperScan，放在启动类之上
-* */
-//注意：配置文件的名字要和接口的名字一致
-
-//@Mapper
-public interface studentInfo &#123;
-    Student selectById(@Param(&quot;stuId&quot;)Integer id);
-&#125;
-</code></pre>
+<li><p>用 url表示资源，在互联网中，所使用的所有资源都是通过url表示的。<br>REST在url中使用名词表示资源以及资源访问信息<br><br>1001是要查询的学生id，REST中使用” &#x2F; “来分割资源信息<br>格式：<a target="_blank" rel="noopener" href="http://localhost:8080/myboot/student/1001">http://localhost:8080/myboot/student/1001</a></p>
 </li>
-<li><p>方法2: 在启动类之上使用 <em>@MapperScan</em></p>
-<pre><code class="hljs">@SpringBootApplication
-//在启动类使用@MapperScan注解，可以扫描包下的所有mapper.basePackages 是dao所在的包名
-//可以用数组的形式，指定多个包， &#123;&quot;b1&quot;,&quot;b2&quot;,...&#125;
-@MapperScan(basePackages=&quot;ormmysql11.ormmysql11.dao&quot;)
-public class OrmMysql11Application &#123;
-    public static void main(String[] args) &#123;
-        SpringApplication.run(OrmMysql11Application.class, args);
-    &#125;
-&#125;
+<li><p>对资源的操作： CRUD<br> 查询、更新、删除、创建 -&gt; 资源 <br><br> REST中使用http中的动作（<strong>动作指的就是http中的请求方式</strong>），表示对资源的操作。<br><br> 动作包括： （ 这些只是在REST风格下对应的动作 ）</p>
+<ol>
+<li>get 查询资源 （ 1001 是id， 1是学生状态，）</li>
+</ol>
+<pre><code class="hljs"> 查询学生：http://localhost:8080/myboot/student/1001/1
+ 处理多个资源：使用复数形式
+ http://localhost:8080/myboot/student/1001/1002/1003/...
 </code></pre>
+<ol start="2">
+<li>post 创建资源，在post请求中传递数据，前端页面使用表单的模式传递数据</li>
+</ol>
+<pre><code class="hljs"> http://localhost:8080/myboot/student/1002
+ &lt;form action=&quot;http://localhost:8080/myboot/student&quot; method=&quot;post&quot;&gt;
+ &lt;input name=&quot;name&quot;&gt;
+ &lt;input name=&quot;age&quot;&gt;
+ &lt;/form&gt;
+以下两个方式，浏览器默认不支持，所以使用postman工具来模拟依赖
+SpringMVC中使用过滤器将收到的post请求转为put和delete
+   1. 在 application.properties 中开启HiddenhttpMethodFilter过滤器
+   2. 在请求页面中，需要包含一个_method参数，value为put或delete，发起这个请求时要使用post方式
+</code></pre>
+<ol start="3">
+<li>put: 更新资源</li>
+</ol>
+<pre><code class="hljs"> &lt;form action=&quot;http://localhost:8080/myboot/student/1&quot; method=&quot;post&quot;&gt;
+             &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+             &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;
+             &lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;PUT /&gt;
+             用这样的方法来让浏览器知道实际上要用put来访问
+     &lt;/form&gt;
+</code></pre>
+<ol start="4">
+<li><p>delete: 删除资源，操作与put一样</p>
 </li>
-<li><p>方法三: 如果dao和mapper文件不在一个包下</p>
-<p>可以将mapper文件放到resources目录下，这样将java文件和mapper文件分离。更清晰.</p>
-<p>在application.properties 文件中指定mapper位置</p>
-<pre><code class="hljs"> mybatis.mapper-locations=classpath:mapper/*.xml 
-</code></pre>
-<p>在resources 目录下mapper文件夹中所有的xml文件<br>（有时候在target目录下会丢失配置文件，在maven中配置resources读取所有文件）</p>
-<pre><code class="hljs">&lt;resources&gt;
-    &lt;resource&gt;
-        &lt;directory&gt;src/main/resources&lt;/directory&gt;
-        &lt;includes&gt;
-            &lt;include&gt;**/*.*&lt;/include&gt;
-        &lt;/includes&gt;
-    &lt;/resource&gt;
-&lt;/resources&gt;
+<li><p>注意： 一些比如分页，排序等参数依然放在url后面。 只有与资源 密切相关的才放在url中,比如</p>
+</li>
+</ol>
+<pre><code class="hljs"> http://localhost:8080/myboot/student?page=1&amp;pageSize=20
 </code></pre>
 </li>
 </ol>
+<h1 id="四、-RESTful的注解："><a href="#四、-RESTful的注解：" class="headerlink" title="四、 RESTful的注解："></a>四、 RESTful的注解：</h1><p>在模拟http动作的时候，可以使用postman进行模拟发送，减少了写前端页面的操作。</p>
+<ol>
+<li><p>@PathVariable: 从url中获取数据</p>
 </li>
-<li><p>在pom文件中配置resources，读取所有xml文件，或者使用上面方法三中的配置<br> <resources><br>             <resource><br>                 <directory>src&#x2F;main&#x2F;java</directory><br>                 <includes><br>                     <include>**&#x2F;*.xml</include><br>                 </includes><br>             </resource><br> </resources></p>
+<li><p>@GetMapping: 支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.GET)</p>
 </li>
-<li><p>在application.properties 中配置数据库</p>
-<pre><code class="hljs"> #配置数据库
- spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
- spring.datasource.url=
- spring.datasource.username=
- spring.datasource.password=
+<li><p>@PostMapping: 支持post请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.POST)</p>
+</li>
+<li><p>@PutMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.PUT)</p>
+</li>
+<li><p>@DeleteMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.Delete)</p>
+</li>
+<li><p>@RestController： 复合注解， 是 @Controller与@ResponseBody的组合</p>
+<pre><code class="hljs"> 在某个类上使用@RestController，表示该类的所有方法都加入了@ResponseBody
 </code></pre>
-</li>
-<li><p>设置开启日志,有很多日志的格式，选取需要的类。在application.properties中配置</p>
-<pre><code class="hljs"> mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
-</code></pre>
-</li>
-</ol>
-<h2 id="二、SpringBoot中事务的实现"><a href="#二、SpringBoot中事务的实现" class="headerlink" title="二、SpringBoot中事务的实现"></a>二、SpringBoot中事务的实现</h2><ol>
-<li><p>在业务方法Service实现类上加上 <em>@Transaction</em>，加入注解以后，让方法有事务功能。</p>
-<pre><code class="hljs">/*@Transactional 表示方法有事务支持，如果不设置属性，默认使用数据库的隔离级别 REQUIRED 传播行为
-                 ： 超时时间 -1
-                 如果抛出异常，则回滚事务
- **/
- @Transactional
- @Override
- public int addStudent(Student student) &#123;
-     System.out.println(&quot;插入业务执行了&quot;);
-     int rows = studentMapper.insert(student);
-     System.out.println(&quot;执行sql语句&quot;);
-     //抛出一个runtime exception， 为了回滚事务
-     //int n = 10/0;
-     return rows;
- &#125;
-</code></pre>
-</li>
-<li><p>在主启动类上面 加入 <em>@EnableTransactionManager</em></p>
-</li>
-<li><p>Mybatis逆向工程插件</p>
-<pre><code class="hljs"> mybatis代码自动生成插件
- &lt;plugin&gt;
-     &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
-     &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
-     &lt;version&gt;1.4.0&lt;/version&gt;
-     &lt;configuration&gt;
-         指定配置文件，放在项目的根目录之下，与src平级
-         &lt;configurationFile&gt;GeneratorMapper.xml&lt;/configurationFile&gt;
-         &lt;verbose&gt;true&lt;/verbose&gt;
-         &lt;overwrite&gt;true&lt;/overwrite&gt;
-     &lt;/configuration&gt;
- &lt;/plugin&gt;
-</code></pre>
-</li>
-<li><p>使用了Mybatis逆向工程，配置文件信息在GeneratorMapper中查看</p>
 </li>
 </ol>
 
@@ -397,7 +367,7 @@ public class OrmMysql11Application &#123;
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Springboot/">#Springboot</a>
+        <a href="/tags/RESTful/">#RESTful</a>
       
     </div>
   
@@ -409,8 +379,8 @@ public class OrmMysql11Application &#123;
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SpringBoot-基础使用(三)-数据库相关</div>
-      <div>http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/</div>
+      <div>SpringBoot--RESTful接口架构风格</div>
+      <div>http://example.com/2022/02/24/SpringBoot-RESTful%E6%8E%A5%E5%8F%A3%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC/</div>
     </div>
     <div class="license-meta">
       
@@ -422,7 +392,7 @@ public class OrmMysql11Application &#123;
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年2月23日</div>
+          <div>2022年2月24日</div>
         </div>
       
       
@@ -452,9 +422,9 @@ public class OrmMysql11Application &#123;
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/02/24/Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="Spring事务的学习">
+                      <a href="/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/" title="SpringBoot--打包">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Spring事务的学习</span>
+                        <span class="hidden-mobile">SpringBoot--打包</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -462,8 +432,8 @@ public class OrmMysql11Application &#123;
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8(%E4%BA%8C)/" title="SpringBoot-基础使用(二)">
-                        <span class="hidden-mobile">SpringBoot-基础使用(二)</span>
+                      <a href="/2022/02/24/Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="Spring事务的学习">
+                        <span class="hidden-mobile">Spring事务的学习</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

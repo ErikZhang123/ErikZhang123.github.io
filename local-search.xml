@@ -4,6 +4,82 @@
   
   
   <entry>
+    <title>Thymleaf模版技术</title>
+    <link href="/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/"/>
+    <url>/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Thymleaf模版技术–基础使用"><a href="#Thymleaf模版技术–基础使用" class="headerlink" title="Thymleaf模版技术–基础使用"></a>Thymleaf模版技术–基础使用</h1><p>模版技术 ：<br>jsp是最早的模版， 其数据来自于服务器端，性能较差<br>模版就是一些框架，来做视图层处理，实际上就是用于显示数据的。</p><p>Thymeleaf 可以在web或者非web项目中使用，其基于HTML语言 ， 在此基础上加上了模版引擎语法。在Springboot中集成了模版技术。</p><h2 id="一、，模版配置："><a href="#一、，模版配置：" class="headerlink" title="一、，模版配置："></a>一、，模版配置：</h2><ol><li><p>需要在建立模块的时候选择相应的<strong>模版引擎</strong></p></li><li><p>将要使用的视图模版文件的时候放在resources的templates文件夹下。在controller中以视图的方式访问模版。</p><p> 可以在application.properties 中对模版引擎进行设置，相关依赖：</p><pre><code class="hljs"> &lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;     &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt; &lt;/dependency&gt;</code></pre></li><li><p>在application.properties中设置 </p><pre><code class="hljs"> spring.thymeleaf.cache=true  </code></pre><p>使用缓存，当用户访问以后，再次访问这个页面的时候，就是从内存中访问。上线之后设为true。但是开发阶段因为要修改模版，所以开发的时候一般设为false</p></li><li><p>设置模版的默认字符集和文件格式：</p><p> 一般默认情况下是用的utf-8与html，可以根据情况在application.properties中进行修改</p><pre><code class="hljs"> spring.thymeleaf.encoding=utf-8 #模版的类型，默认是html，因为模版就是html文件 spring.thymekeaf.mode=HTML</code></pre></li><li><p>设置模版前缀与后缀： 就是设置模版的视图解析器<br>模版前缀 默认放在classpath:&#x2F;template&#x2F; ， 可以进行修改<br>，修改方式类似视图解析器。在application.properties文件中设置</p><pre><code class="hljs"> spring.thymeleaf.prefix=classpath:/template/ spring.thymeleaf.suffix=.html</code></pre></li></ol><p>表示在Controller中返回视图的逻辑地址的时候是在 &#x2F;src&#x2F;resources&#x2F;template文件夹下，寻找后缀为 .html的文件</p><h2 id="二、模版使用"><a href="#二、模版使用" class="headerlink" title="二、模版使用"></a>二、模版使用</h2><p>模版的语法格式： 就是在html标签的属性前加上 th: 从而可以在html标签中获取服务器返回的数据对象。因为只有加了th 才能被模版引擎处理，但是在前端浏览器打开开发者界面的时候不会显示th</p><p>加th的意义，实际上是让其可以根据后端返回的数据来动态更改html的属性<br>可以在xmlns:th&#x3D;”<a href="http://www.w3.org/1999/xhtml&quot;">http://www.w3.org/1999/xhtml&quot;</a> 更改，将换成其他的就可以。</p><ol><li><p>表达式：</p><ol><li>标准变量表达式 <br><br> 语法： ${key}</li></ol><p> 作用：获取key对应的文本数据，key是request作用域中的key，对应变量名。可以使用</p><pre><code class="hljs"> request.setAttribute(key,value) 或 model.addAttribute(key,value)  数据放入reqeust作用域</code></pre><p> 在html的中使用 属性  th:text&#x3D;”${key}” ， 实际上获取的就是对象，如果访问对象的属性，使用的是set，get方法</p><pre><code class="hljs">  &lt;p th:text=&quot;$&#123;user1&#125;&quot;&gt;对象&lt;/p&gt;</code></pre><p> 如果key不存在，则会使用 “” 空字符串将标签中的文本内容进行替代</p><ol start="2"><li>选择变量表达式（星号变量表达式）<br> 语法： *{key}<br> 作用：获取key对应的数据， 注意 ， *{key}不能单独使用，要和 th:object 一起使用，来获取对象的属性值。并且简化 ${key} 每次取出对象属性都要写 ‘ user. ‘的耦合性。</li></ol><p> 注意，只能在th:object 的标签内部使用该对象的属性，标签外无法使用</p><pre><code class="hljs"> &lt;div th:object=&quot;$&#123;user2&#125;&quot;&gt;   首先在div中要获取这个对象     然后在标签中通过* 来使用对象的属性     &lt;p th:text=&quot;*&#123;id&#125;&quot;&gt;id&lt;/p&gt;&lt;br&gt;     &lt;p th:text=&quot;*&#123;name&#125;&quot;&gt;姓名&lt;/p&gt;&lt;br&gt;     &lt;p th:text=&quot;*&#123;age&#125;&quot;&gt;年龄&lt;/p&gt;&lt;br&gt; &lt;/div&gt;</code></pre><ol start="3"><li><p>链接表达式（URL表达式）</p><p> 语法： @{url} <br><br> 作用：表示链接， 可以对一下的类型使用，链接可以是绝对地址也可以是相对地址，适用于<br><br> <script src="">,<link href = ""> <a href=""> <form action=""> <img src =""><br> 链接绝对路径</p><pre><code class="hljs"> &lt;a th:href=&quot;@&#123;http://www.baidu.com&#125;&quot;&gt;链接到百度&lt;/a&gt;</code></pre><p> 链接相对路径 ， 注意开头有无 / 的区别</p><pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryAccount&#125;&quot;&gt;相对地址，没有参数&lt;/a&gt;</code></pre><p> 链接相对路径，用字符串传递参数</p><pre><code class="hljs"> &lt;a th:href=&quot;@&#123;&#39;/tpl/queryAccount?id=&#39;+$&#123;userid&#125;&#125;&quot;&gt;相对地址，将参数缝合在url中传输，从model中获取&lt;/a&gt;</code></pre><p> 然而字符串拼接的传参方式并不是很推荐,推荐使用一下几种方式</p><ol><li><p>使用() 传参数</p><pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryAccount(id=$&#123;userid&#125;)&#125;&quot;&gt;使用() 传参数&gt;&lt;/a&gt;</code></pre></li><li><p>使用() 传递多个参数，参数名字要与后端接受的参数名一致</p><pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryUser(name=&#39;lisi&#39;,age=&#39;20&#39;)&#125;&quot;&gt;使用() 传多个参数&gt;&lt;/a&gt;</code></pre></li></ol></li></ol></li><li><p>属性： 属性是放在html元素中，实际上就是html的属性，只不过加上了th前缀。属性作用不变，只不过加上th以后，属性值会由模版引擎处理，让其可以使用变量表达式。比如：</p><pre><code class="hljs"> &lt;form action=&quot;/login&quot; method=&quot;post&quot;&gt;&lt;/form&gt;</code></pre><p> 也可以写成</p><pre><code class="hljs"> &lt;form th:action=&quot;/login&quot; th:method=&quot;$&#123;method&#125;&quot;&gt;&lt;/form&gt; 获取服务器返回的method变量的值，并作为属性值使用</code></pre></li><li><p>each循环， 可以循环List，Array，Map</p><p> 语法： th:each="集合循环成员，循环状态变量 : ${key}"</p><p> 在html的标签中使用, 其中 集合循环成员，循环状态变量 是可以自定义名称，而且循环状态变量可以不定义<br> 有点类似于foreach，注意，each用在哪个标签上，<strong>哪个标签以及其包裹的内容</strong> 就会循环出现n次</p><pre><code class="hljs"> &lt;div th:each=&quot;集合循环成员，循环状态变量 : $&#123;key&#125;&quot;&gt;     &lt;p th:text=&quot;$&#123;集合循环成员&#125;&quot;&gt;&lt;/p&gt; &lt;/div&gt;</code></pre><p> 循环状态变量 默认名字是 集合循环成员+State。通过该变量可以获得以下信息</p><pre><code class="hljs"> index: 当前迭代对象的索引 count: 当前迭代对象的数量，已经迭代了多少个，从1开始计算 size:  被迭代的对象大小，即 集合中有多少对象 current：当前迭代变量 even/odd : 当前所在的是偶数？奇数？ first：判断是否是一个迭代 last: 判断是否是最后一个迭代</code></pre><p> 注意： 在遍历Map的时候 有 对象.key,对象.value。这个对象就是当前遍历到的map中的kv对象</p></li><li><p>判断条件 if ; unless </p><p> 表达式符号和java中一样，比如== ， 注意，空字符串被认为是true，null被认为false</p><pre><code class="hljs"> &lt;div th:if = &quot;$&#123;表达式&#125;&quot; &gt; 文本内容 &lt;/div&gt;      如果表达式中结果为true，则显示标签体的内容，否则不显示 &lt;div th:unless = &quot;$&#123;表达式&#125;&quot; &gt; 文本内容&lt;/div&gt;   与if相反，除了表达式相等的情况，其他都显示标签体中的内容</code></pre></li><li><p>switch , case 使用方法和java一样，但是所有的case只有一个能匹配成功，匹配成功了才显示标签内的内</p><pre><code class="hljs"> &lt;div th:switch=&quot;要比对的值&quot;&gt;     &lt;p th:case=&quot;值1&quot;&gt; 结果1 &lt;/p&gt;     &lt;p th:case=&quot;*&quot;&gt; 默认结果 &lt;/p&gt; &lt;/div&gt;</code></pre></li><li><p>内联   th:inline 三个取值类型：<strong>text , javascript, none</strong><br> 不用依赖于html标签，直接显示。 </p><pre><code class="hljs"> &lt;p th:text=&quot;&quot;&gt; 而这种形式这是依赖于html的</code></pre><ol><li><p>内联text : 在html标签外获取表达式的值, 可以直接在标签内容后面显示获取的变量值，而不会替代表达式内容<br> 语法：</p><pre><code class="hljs"> &lt;div th:inline=&quot;text&quot;&gt; &lt;p&gt; 显示姓名是 ： [[$&#123;key&#125;]] &lt;/p&gt; &lt;/div&gt;</code></pre></li><li><p>内联javascript : 在 js语句中获取数据, 也可以在事件中使用js方法</p></li></ol></li><li><p>字面量： 包括<strong>数字类型， 文本类型，boolean类型</strong><br> 可以在</p><pre><code class="hljs"> th:text&quot;&quot; 中使用&#39;&#39; 单引号来将 字面量 和 表达式 区分开 &lt;p th:text=&quot;&#39;我是&#39;+ $&#123;sex&#125; + &#39;人&#39;&quot;&gt; 或者 字符串链接 使用| 字符串+ 表达式| 效果一样 &lt;p th:text=&quot;|我是 $&#123;sex&#125;  人|&quot;&gt;</code></pre></li><li><p>运算符： 正常的运算符，但是需要在${} 中使用</p><pre><code class="hljs"> gt,lt,ge,le, 代表 &gt; , &lt; ,&gt;= ,&lt;= eq ,  nq 代表 ==  ， ！=</code></pre><p> 也可以进行多元表达式 </p><pre><code class="hljs"> a &lt; b ? 1 : 2  其中a  ， b 也可以为表达式，可以嵌套</code></pre></li><li><p>内置对象,可以看Thymeleaf的文档来看更多的内置对象</p><ol><li><p>基本对象</p><pre><code class="hljs"> #request：HttpServletRequest #session：HttpSession 直接使用session 也可以表示HttpSession 对象，是#session 的简单方式 可以在模版中直接使用 $&#123;param&#125; 获取请求对象的参数列表，其实使用方法和servlet中使用的方法是一样的</code></pre></li><li><p>内置的工具类功能，可以看Thymeleaf的文档来看更多的内置工具类对象的使用方法（和java类似。<br> 使用的时候注意，在${ }里面的内容，在对象方法中调用变量的时候不需要再写${}</p><pre><code class="hljs"> #dates  $</code></pre></li></ol></li></ol>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Thymeleaf</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot--打包</title>
+    <link href="/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/"/>
+    <url>/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/</url>
+    
+    <content type="html"><![CDATA[<h1 id="SpringBoo项目的打包"><a href="#SpringBoo项目的打包" class="headerlink" title="SpringBoo项目的打包"></a>SpringBoo项目的打包</h1><p>都是使用maven的pacakage功能进行打包，可以在pom中指定打包后文件的名称，文件默认放在 src同级目录下</p><h1 id="一、打包成war文件"><a href="#一、打包成war文件" class="headerlink" title="一、打包成war文件"></a>一、打包成war文件</h1><ol><li><p>修改pom文件</p><pre><code class="hljs"> 打包类型，packaging标签，默认是jar &lt;packaging&gt;war&lt;/packaging&gt; 打包后文件名称 &lt;finalName&gt;myboot&lt;/finalName&gt;</code></pre></li><li><p>主启动类要继承SpringBootServletInitializer 让其可以使用<strong>外部tomcat</strong>，并且要实现configure()方法。这个继承就是代替了原来的web.xml，使用嵌入式servlet，不支持jsp.</p><pre><code class="hljs"> @SpringBootApplication public class PackageWar16Application extends SpringBootServletInitializer &#123; public static void main(String[] args)  &#123;     SpringApplication.run(PackageWar16Application.class, args); &#125; @Override protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123; //        sources 里面是继承extends SpringBootServletInitializer的类的class文件     return builder.sources(PackageWar16Application.class); &#125; &#125;</code></pre></li><li><p>通过外部tomcat访问时候注意:</p><ol><li>打包后将war文件放到Tomcat的webapp下，终端运行tomcat时会自动解压</li><li>打包以后 包名就是访问的context-path，可能与文件的application中的设置不一样</li><li>如果使用外部tomcat，端口默认为8080</li><li>可能遭遇Tomcat在终端无法访问的情况，考虑重新下载tomcat</li></ol></li></ol><h1 id="二、打包称jar文件"><a href="#二、打包称jar文件" class="headerlink" title="二、打包称jar文件"></a>二、打包称jar文件</h1><p>打包jar时，如果有jsp文件，必须指定maven-plugin版本<br>并且在pom文件中指定打包的类型，即 <em>packaging</em> 标签</p><pre><code class="hljs">&lt;packaging&gt;jar&lt;/packaging&gt;</code></pre><p>必须指定spring-boot-maven-plugin的版本</p><pre><code class="hljs">&lt;plugins&gt;    &lt;plugin&gt;        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;        &lt;version&gt;1.4.2.RELEASE&lt;/version&gt;  必须指定这个版本    &lt;/plugin&gt;&lt;/plugins&gt;</code></pre><h1 id="三、jar与war的区别"><a href="#三、jar与war的区别" class="headerlink" title="三、jar与war的区别"></a>三、jar与war的区别</h1><p>war：使用外部的独立tomcat服务器，独立tomcat服务器的性能会比内嵌服务器更好，但是同时war包也会更加笨重。</p><p>jar包更轻便，但是内嵌的tomcat在性能上比独立的tomcat弱一些</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>SpringBoot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot--RESTful接口架构风格</title>
+    <link href="/2022/02/24/SpringBoot-RESTful%E6%8E%A5%E5%8F%A3%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC/"/>
+    <url>/2022/02/24/SpringBoot-RESTful%E6%8E%A5%E5%8F%A3%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、接口架构风格-：-RESTful"><a href="#一、接口架构风格-：-RESTful" class="headerlink" title="一、接口架构风格 ： RESTful"></a>一、接口架构风格 ： RESTful</h1><p>这里的接口指的是API，application Programming Interface 。 比如函数，http接口。开发人员可以通过接口来访问或调用一些<br>已经开发好的函数功能，但是无需访问源码，也无需了解工作原理.<br>比如：servlet，controller的url实际上就可以视为一个接口</p><pre><code class="hljs">http://localhost:9002/mytransaction/addStudent?name=zhangsan&amp;age=29</code></pre><p>架构风格： 指接口组织的方式，即接口的格式.</p><h1 id="二、REST的意义"><a href="#二、REST的意义" class="headerlink" title="二、REST的意义"></a>二、REST的意义</h1><p>REST：Representational State Transfer，即 <em>表现层状态转移</em> ，它 是一种架构设计风格，并非强制。</p><p>它是客户端和服务器交互时的架构理念和设计原则。基于REST的风格更简洁，更有层次。<br>RESTful 实际上就是使用 <strong>url</strong> 表示资源，使用 <strong>http动作</strong> 来 <strong>操作资源</strong></p><pre><code class="hljs">表现层就是视图层，通过视图页面显示操作结果状态： 指对资源的操作，导致资源的变化  </code></pre><h1 id="三、REST中的要素"><a href="#三、REST中的要素" class="headerlink" title="三、REST中的要素"></a>三、REST中的要素</h1><p>即如何使用REST表示资源 以及 对资源的操作</p><ol><li><p>用 url表示资源，在互联网中，所使用的所有资源都是通过url表示的。<br>REST在url中使用名词表示资源以及资源访问信息<br><br>1001是要查询的学生id，REST中使用” &#x2F; “来分割资源信息<br>格式：<a href="http://localhost:8080/myboot/student/1001">http://localhost:8080/myboot/student/1001</a></p></li><li><p>对资源的操作： CRUD<br> 查询、更新、删除、创建 -&gt; 资源 <br><br> REST中使用http中的动作（<strong>动作指的就是http中的请求方式</strong>），表示对资源的操作。<br><br> 动作包括： （ 这些只是在REST风格下对应的动作 ）</p><ol><li>get 查询资源 （ 1001 是id， 1是学生状态，）</li></ol><pre><code class="hljs"> 查询学生：http://localhost:8080/myboot/student/1001/1 处理多个资源：使用复数形式 http://localhost:8080/myboot/student/1001/1002/1003/...</code></pre><ol start="2"><li>post 创建资源，在post请求中传递数据，前端页面使用表单的模式传递数据</li></ol><pre><code class="hljs"> http://localhost:8080/myboot/student/1002 &lt;form action=&quot;http://localhost:8080/myboot/student&quot; method=&quot;post&quot;&gt; &lt;input name=&quot;name&quot;&gt; &lt;input name=&quot;age&quot;&gt; &lt;/form&gt;以下两个方式，浏览器默认不支持，所以使用postman工具来模拟依赖SpringMVC中使用过滤器将收到的post请求转为put和delete   1. 在 application.properties 中开启HiddenhttpMethodFilter过滤器   2. 在请求页面中，需要包含一个_method参数，value为put或delete，发起这个请求时要使用post方式</code></pre><ol start="3"><li>put: 更新资源</li></ol><pre><code class="hljs"> &lt;form action=&quot;http://localhost:8080/myboot/student/1&quot; method=&quot;post&quot;&gt;             &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;             &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;             &lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;PUT /&gt;             用这样的方法来让浏览器知道实际上要用put来访问     &lt;/form&gt;</code></pre><ol start="4"><li><p>delete: 删除资源，操作与put一样</p></li><li><p>注意： 一些比如分页，排序等参数依然放在url后面。 只有与资源 密切相关的才放在url中,比如</p></li></ol><pre><code class="hljs"> http://localhost:8080/myboot/student?page=1&amp;pageSize=20</code></pre></li></ol><h1 id="四、-RESTful的注解："><a href="#四、-RESTful的注解：" class="headerlink" title="四、 RESTful的注解："></a>四、 RESTful的注解：</h1><p>在模拟http动作的时候，可以使用postman进行模拟发送，减少了写前端页面的操作。</p><ol><li><p>@PathVariable: 从url中获取数据</p></li><li><p>@GetMapping: 支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.GET)</p></li><li><p>@PostMapping: 支持post请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.POST)</p></li><li><p>@PutMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.PUT)</p></li><li><p>@DeleteMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.Delete)</p></li><li><p>@RestController： 复合注解， 是 @Controller与@ResponseBody的组合</p><pre><code class="hljs"> 在某个类上使用@RestController，表示该类的所有方法都加入了@ResponseBody</code></pre></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>SpringBoot</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>RESTful</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Spring事务的学习</title>
+    <link href="/2022/02/24/Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AD%A6%E4%B9%A0/"/>
+    <url>/2022/02/24/Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AD%A6%E4%B9%A0/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>SpringBoot-基础使用(三)-数据库相关</title>
     <link href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/"/>
     <url>/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/</url>

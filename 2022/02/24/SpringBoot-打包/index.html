@@ -16,21 +16,21 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
+    <meta name="description" content="SpringBoo项目的打包都是使用maven的pacakage功能进行打包，可以在pom中指定打包后文件的名称，文件默认放在 src同级目录下 一、打包成war文件 修改pom文件  打包类型，packaging标签，默认是jar  &lt;packaging&gt;war&lt;&#x2F;packaging&gt;   打包后文件名称  &lt;finalName&gt;myboot&lt;&#x2F;fina">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringBoot-基础使用(三)-数据库相关">
-<meta property="og:url" content="http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/index.html">
+<meta property="og:title" content="SpringBoot--打包">
+<meta property="og:url" content="http://example.com/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma">
+<meta property="og:description" content="SpringBoo项目的打包都是使用maven的pacakage功能进行打包，可以在pom中指定打包后文件的名称，文件默认放在 src同级目录下 一、打包成war文件 修改pom文件  打包类型，packaging标签，默认是jar  &lt;packaging&gt;war&lt;&#x2F;packaging&gt;   打包后文件名称  &lt;finalName&gt;myboot&lt;&#x2F;fina">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-23T12:59:26.000Z">
-<meta property="article:modified_time" content="2022-02-23T13:20:29.296Z">
+<meta property="article:published_time" content="2022-02-24T00:49:45.000Z">
+<meta property="article:modified_time" content="2022-02-24T00:59:22.434Z">
 <meta property="article:author" content="ErikZhang">
-<meta property="article:tag" content="Springboot">
+<meta property="article:tag" content="SpringBoot">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>SpringBoot-基础使用(三)-数据库相关 - Erik&#39;s blog</title>
+  <title>SpringBoot--打包 - Erik&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -186,7 +186,7 @@
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
-          <span id="subtitle" title="SpringBoot-基础使用(三)-数据库相关">
+          <span id="subtitle" title="SpringBoot--打包">
             
           </span>
         </div>
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-02-23 23:59" pubdate>
-          2022年2月23日 晚上
+        <time datetime="2022-02-24 11:49" pubdate>
+          2022年2月24日 中午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          1.4k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          21 分钟
+          12 分钟
         
       </span>
     
@@ -259,112 +259,60 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SpringBoot-基础使用(三)-数据库相关</h1>
+            <h1 style="display: none">SpringBoot--打包</h1>
             
             <div class="markdown-body">
               
-              <h1 id="SpringBoot-基础使用-三-数据库相关"><a href="#SpringBoot-基础使用-三-数据库相关" class="headerlink" title="SpringBoot-基础使用(三) 数据库相关"></a>SpringBoot-基础使用(三) 数据库相关</h1><h2 id="一、Mybatis的使用"><a href="#一、Mybatis的使用" class="headerlink" title="一、Mybatis的使用"></a>一、Mybatis的使用</h2><ol>
-<li><p>在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动<br> mybatis-spring 依赖，来继承mybatis</p>
-</li>
-<li><p>创建dao接口和mapper文件, 创建方法和Mybatis一样</p>
-<p><strong>注意：mapper文件要和接口文件名字一致</strong></p>
-<ol>
-<li><p>方法1: 接口上添加@Mapper注解</p>
-<pre><code class="hljs">/**SpringBoot中需要使用Mapper注解来表示这个接口是dao接口，要创建这个接口的代理对象*
-* @Mapper 的缺点在于 ， 如果有很多接口，那么每个接口都需要加这个注解，比较麻烦
-* 可以使用 @MapperScan，放在启动类之上
-* */
-//注意：配置文件的名字要和接口的名字一致
+              <h1 id="SpringBoo项目的打包"><a href="#SpringBoo项目的打包" class="headerlink" title="SpringBoo项目的打包"></a>SpringBoo项目的打包</h1><p>都是使用maven的pacakage功能进行打包，可以在pom中指定打包后文件的名称，文件默认放在 src同级目录下</p>
+<h1 id="一、打包成war文件"><a href="#一、打包成war文件" class="headerlink" title="一、打包成war文件"></a>一、打包成war文件</h1><ol>
+<li><p>修改pom文件</p>
+<pre><code class="hljs"> 打包类型，packaging标签，默认是jar
+ &lt;packaging&gt;war&lt;/packaging&gt;
 
-//@Mapper
-public interface studentInfo &#123;
-    Student selectById(@Param(&quot;stuId&quot;)Integer id);
-&#125;
+ 打包后文件名称
+ &lt;finalName&gt;myboot&lt;/finalName&gt;
 </code></pre>
 </li>
-<li><p>方法2: 在启动类之上使用 <em>@MapperScan</em></p>
-<pre><code class="hljs">@SpringBootApplication
-//在启动类使用@MapperScan注解，可以扫描包下的所有mapper.basePackages 是dao所在的包名
-//可以用数组的形式，指定多个包， &#123;&quot;b1&quot;,&quot;b2&quot;,...&#125;
-@MapperScan(basePackages=&quot;ormmysql11.ormmysql11.dao&quot;)
-public class OrmMysql11Application &#123;
-    public static void main(String[] args) &#123;
-        SpringApplication.run(OrmMysql11Application.class, args);
-    &#125;
-&#125;
-</code></pre>
-</li>
-<li><p>方法三: 如果dao和mapper文件不在一个包下</p>
-<p>可以将mapper文件放到resources目录下，这样将java文件和mapper文件分离。更清晰.</p>
-<p>在application.properties 文件中指定mapper位置</p>
-<pre><code class="hljs"> mybatis.mapper-locations=classpath:mapper/*.xml 
-</code></pre>
-<p>在resources 目录下mapper文件夹中所有的xml文件<br>（有时候在target目录下会丢失配置文件，在maven中配置resources读取所有文件）</p>
-<pre><code class="hljs">&lt;resources&gt;
-    &lt;resource&gt;
-        &lt;directory&gt;src/main/resources&lt;/directory&gt;
-        &lt;includes&gt;
-            &lt;include&gt;**/*.*&lt;/include&gt;
-        &lt;/includes&gt;
-    &lt;/resource&gt;
-&lt;/resources&gt;
-</code></pre>
-</li>
-</ol>
-</li>
-<li><p>在pom文件中配置resources，读取所有xml文件，或者使用上面方法三中的配置<br> <resources><br>             <resource><br>                 <directory>src&#x2F;main&#x2F;java</directory><br>                 <includes><br>                     <include>**&#x2F;*.xml</include><br>                 </includes><br>             </resource><br> </resources></p>
-</li>
-<li><p>在application.properties 中配置数据库</p>
-<pre><code class="hljs"> #配置数据库
- spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
- spring.datasource.url=
- spring.datasource.username=
- spring.datasource.password=
-</code></pre>
-</li>
-<li><p>设置开启日志,有很多日志的格式，选取需要的类。在application.properties中配置</p>
-<pre><code class="hljs"> mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
-</code></pre>
-</li>
-</ol>
-<h2 id="二、SpringBoot中事务的实现"><a href="#二、SpringBoot中事务的实现" class="headerlink" title="二、SpringBoot中事务的实现"></a>二、SpringBoot中事务的实现</h2><ol>
-<li><p>在业务方法Service实现类上加上 <em>@Transaction</em>，加入注解以后，让方法有事务功能。</p>
-<pre><code class="hljs">/*@Transactional 表示方法有事务支持，如果不设置属性，默认使用数据库的隔离级别 REQUIRED 传播行为
-                 ： 超时时间 -1
-                 如果抛出异常，则回滚事务
- **/
- @Transactional
+<li><p>主启动类要继承SpringBootServletInitializer 让其可以使用<strong>外部tomcat</strong>，并且要实现configure()方法。这个继承就是代替了原来的web.xml，使用嵌入式servlet，不支持jsp.</p>
+<pre><code class="hljs"> @SpringBootApplication
+ public class PackageWar16Application extends SpringBootServletInitializer &#123;
+
+ public static void main(String[] args)  &#123;
+     SpringApplication.run(PackageWar16Application.class, args);
+ &#125;
+
  @Override
- public int addStudent(Student student) &#123;
-     System.out.println(&quot;插入业务执行了&quot;);
-     int rows = studentMapper.insert(student);
-     System.out.println(&quot;执行sql语句&quot;);
-     //抛出一个runtime exception， 为了回滚事务
-     //int n = 10/0;
-     return rows;
+ protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) &#123;
+ //        sources 里面是继承extends SpringBootServletInitializer的类的class文件
+     return builder.sources(PackageWar16Application.class);
+ &#125;
+
  &#125;
 </code></pre>
 </li>
-<li><p>在主启动类上面 加入 <em>@EnableTransactionManager</em></p>
-</li>
-<li><p>Mybatis逆向工程插件</p>
-<pre><code class="hljs"> mybatis代码自动生成插件
- &lt;plugin&gt;
-     &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
-     &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
-     &lt;version&gt;1.4.0&lt;/version&gt;
-     &lt;configuration&gt;
-         指定配置文件，放在项目的根目录之下，与src平级
-         &lt;configurationFile&gt;GeneratorMapper.xml&lt;/configurationFile&gt;
-         &lt;verbose&gt;true&lt;/verbose&gt;
-         &lt;overwrite&gt;true&lt;/overwrite&gt;
-     &lt;/configuration&gt;
- &lt;/plugin&gt;
-</code></pre>
-</li>
-<li><p>使用了Mybatis逆向工程，配置文件信息在GeneratorMapper中查看</p>
+<li><p>通过外部tomcat访问时候注意:</p>
+<ol>
+<li>打包后将war文件放到Tomcat的webapp下，终端运行tomcat时会自动解压</li>
+<li>打包以后 包名就是访问的context-path，可能与文件的application中的设置不一样</li>
+<li>如果使用外部tomcat，端口默认为8080</li>
+<li>可能遭遇Tomcat在终端无法访问的情况，考虑重新下载tomcat</li>
+</ol>
 </li>
 </ol>
+<h1 id="二、打包称jar文件"><a href="#二、打包称jar文件" class="headerlink" title="二、打包称jar文件"></a>二、打包称jar文件</h1><p>打包jar时，如果有jsp文件，必须指定maven-plugin版本<br>并且在pom文件中指定打包的类型，即 <em>packaging</em> 标签</p>
+<pre><code class="hljs">&lt;packaging&gt;jar&lt;/packaging&gt;
+</code></pre>
+<p>必须指定spring-boot-maven-plugin的版本</p>
+<pre><code class="hljs">&lt;plugins&gt;
+    &lt;plugin&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;1.4.2.RELEASE&lt;/version&gt;  必须指定这个版本
+    &lt;/plugin&gt;
+&lt;/plugins&gt;
+</code></pre>
+<h1 id="三、jar与war的区别"><a href="#三、jar与war的区别" class="headerlink" title="三、jar与war的区别"></a>三、jar与war的区别</h1><p>war：使用外部的独立tomcat服务器，独立tomcat服务器的性能会比内嵌服务器更好，但是同时war包也会更加笨重。</p>
+<p>jar包更轻便，但是内嵌的tomcat在性能上比独立的tomcat弱一些</p>
 
               
             </div>
@@ -372,32 +320,11 @@ public class OrmMysql11Application &#123;
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/SpringBoot/" class="category-chain-item">SpringBoot</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Springboot/">#Springboot</a>
+        <a href="/tags/SpringBoot/">#SpringBoot</a>
       
     </div>
   
@@ -409,8 +336,8 @@ public class OrmMysql11Application &#123;
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SpringBoot-基础使用(三)-数据库相关</div>
-      <div>http://example.com/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/</div>
+      <div>SpringBoot--打包</div>
+      <div>http://example.com/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/</div>
     </div>
     <div class="license-meta">
       
@@ -422,7 +349,7 @@ public class OrmMysql11Application &#123;
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年2月23日</div>
+          <div>2022年2月24日</div>
         </div>
       
       
@@ -452,9 +379,9 @@ public class OrmMysql11Application &#123;
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/02/24/Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="Spring事务的学习">
+                      <a href="/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/" title="Thymleaf模版技术">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Spring事务的学习</span>
+                        <span class="hidden-mobile">Thymleaf模版技术</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -462,8 +389,8 @@ public class OrmMysql11Application &#123;
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8(%E4%BA%8C)/" title="SpringBoot-基础使用(二)">
-                        <span class="hidden-mobile">SpringBoot-基础使用(二)</span>
+                      <a href="/2022/02/24/SpringBoot-RESTful%E6%8E%A5%E5%8F%A3%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC/" title="SpringBoot--RESTful接口架构风格">
+                        <span class="hidden-mobile">SpringBoot--RESTful接口架构风格</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
