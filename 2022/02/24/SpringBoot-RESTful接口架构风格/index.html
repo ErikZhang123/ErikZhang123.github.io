@@ -24,7 +24,7 @@
 <meta property="og:description" content="一、接口架构风格 ： RESTful这里的接口指的是API，application Programming Interface 。 比如函数，http接口。开发人员可以通过接口来访问或调用一些已经开发好的函数功能，但是无需访问源码，也无需了解工作原理.比如：servlet，controller的url实际上就可以视为一个接口 http:&#x2F;&#x2F;localhost:9002&#x2F;mytransaction&#x2F;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-24T00:27:20.000Z">
-<meta property="article:modified_time" content="2022-02-24T01:39:46.869Z">
+<meta property="article:modified_time" content="2022-02-24T01:50:14.614Z">
 <meta property="article:author" content="ErikZhang">
 <meta property="article:tag" content="RESTful">
 <meta name="twitter:card" content="summary_large_image">
@@ -275,7 +275,12 @@
 </code></pre>
 <h1 id="三、REST中的要素"><a href="#三、REST中的要素" class="headerlink" title="三、REST中的要素"></a>三、REST中的要素</h1><p>即如何使用REST表示资源 以及 对资源的操作</p>
 <ol>
-<li><p>用 url表示资源，在互联网中，所使用的所有资源都是通过url表示的。<br>REST在url中使用名词表示资源以及资源访问信息<br><br>1001是要查询的学生id，REST中使用” &#x2F; “来分割资源信息<br>格式：<a target="_blank" rel="noopener" href="http://localhost:8080/myboot/student/1001">http://localhost:8080/myboot/student/1001</a></p>
+<li><p>用 url表示资源，在互联网中，所使用的所有资源都是通过url表示的。</p>
+<pre><code class="hljs">REST在url中使用名词表示资源以及资源访问信息
+例如：
+1001是要查询的学生id，REST中使用&quot; / &quot;来分割资源信息
+格式：http://localhost:8080/myboot/student/1001
+</code></pre>
 </li>
 <li><p>对资源的操作： CRUD<br> 查询、更新、删除、创建 -&gt; 资源 <br><br> REST中使用http中的动作（<strong>动作指的就是http中的请求方式</strong>），表示对资源的操作。<br><br> 动作包括： （ 这些只是在REST风格下对应的动作 ）</p>
 <ol>
@@ -290,9 +295,10 @@
 </ol>
 <pre><code class="hljs"> http://localhost:8080/myboot/student/1002
  &lt;form action=&quot;http://localhost:8080/myboot/student&quot; method=&quot;post&quot;&gt;
- &lt;input name=&quot;name&quot;&gt;
- &lt;input name=&quot;age&quot;&gt;
+   &lt;input name=&quot;name&quot;&gt;
+   &lt;input name=&quot;age&quot;&gt;
  &lt;/form&gt;
+
 以下两个方式，浏览器默认不支持，所以使用postman工具来模拟依赖
 SpringMVC中使用过滤器将收到的post请求转为put和delete
    1. 在 application.properties 中开启HiddenhttpMethodFilter过滤器
@@ -319,22 +325,14 @@ SpringMVC中使用过滤器将收到的post请求转为put和delete
 </li>
 </ol>
 <h1 id="四、-RESTful的注解："><a href="#四、-RESTful的注解：" class="headerlink" title="四、 RESTful的注解："></a>四、 RESTful的注解：</h1><p>在模拟http动作的时候，可以使用postman进行模拟发送，减少了写前端页面的操作。</p>
-<ol>
-<li><p>@PathVariable: 从url中获取数据</p>
-</li>
-<li><p>@GetMapping: 支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.GET)</p>
-</li>
-<li><p>@PostMapping: 支持post请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.POST)</p>
-</li>
-<li><p>@PutMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.PUT)</p>
-</li>
-<li><p>@DeleteMapping：支持get请求方式， 等同于 RequestMapping(method&#x3D;RequestMethod.Delete)</p>
-</li>
-<li><p>@RestController： 复合注解， 是 @Controller与@ResponseBody的组合</p>
-<pre><code class="hljs"> 在某个类上使用@RestController，表示该类的所有方法都加入了@ResponseBody
+<pre><code class="hljs">@PathVariable: 从url中获取数据
+@GetMapping: 支持get请求方式， 等同于 RequestMapping(method=RequestMethod.GET)
+@PostMapping: 支持post请求方式， 等同于 RequestMapping(method=RequestMethod.POST)
+@PutMapping：支持get请求方式， 等同于 RequestMapping(method=RequestMethod.PUT)
+@DeleteMapping：支持get请求方式， 等同于 RequestMapping(method=RequestMethod.Delete)
+@RestController： 复合注解， 是 @Controller与@ResponseBody的组合:
+  在某个类上使用@RestController，表示该类的所有方法都加入了@ResponseBody
 </code></pre>
-</li>
-</ol>
 
               
             </div>
