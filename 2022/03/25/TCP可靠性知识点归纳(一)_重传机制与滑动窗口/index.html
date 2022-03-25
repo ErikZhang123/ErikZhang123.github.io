@@ -16,21 +16,31 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Thymleaf模版技术–基础使用模版技术 ：jsp是最早的模版， 其数据来自于服务器端，性能较差模版就是一些框架，来做视图层处理，实际上就是用于显示数据的。 Thymeleaf 可以在web或者非web项目中使用，其基于HTML语言 ， 在此基础上加上了模版引擎语法。在Springboot中集成了模版技术。 一、，模版配置： 需要在建立模块的时候选择相应的模版引擎  将要使用的视图模版文件的时候">
+    <meta name="description" content="由于TCP是一种可靠的传输协议(不错，不乱，不丢)，因此一些思想是建立在rdt以及所衍生出的滑动窗口等内容的基础上 一、重传机制由rdt2.0提出，当发送端的数据到达接收端时，接收端要发送一个ACK返回给发送方。当发送方发现数据包丢失的情况时候(收到重复ack或没有收到ack)，会启用重传机制。 ACK 中会包含期望得到的数据的序列号，与确认应答信息。 1.1 超时重传( rdt3.0 )当发送方">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Thymleaf模版技术">
-<meta property="og:url" content="http://example.com/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/index.html">
+<meta property="og:title" content="TCP可靠性知识点归纳(一)-重传机制与滑动窗口">
+<meta property="og:url" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="Thymleaf模版技术–基础使用模版技术 ：jsp是最早的模版， 其数据来自于服务器端，性能较差模版就是一些框架，来做视图层处理，实际上就是用于显示数据的。 Thymeleaf 可以在web或者非web项目中使用，其基于HTML语言 ， 在此基础上加上了模版引擎语法。在Springboot中集成了模版技术。 一、，模版配置： 需要在建立模块的时候选择相应的模版引擎  将要使用的视图模版文件的时候">
+<meta property="og:description" content="由于TCP是一种可靠的传输协议(不错，不乱，不丢)，因此一些思想是建立在rdt以及所衍生出的滑动窗口等内容的基础上 一、重传机制由rdt2.0提出，当发送端的数据到达接收端时，接收端要发送一个ACK返回给发送方。当发送方发现数据包丢失的情况时候(收到重复ack或没有收到ack)，会启用重传机制。 ACK 中会包含期望得到的数据的序列号，与确认应答信息。 1.1 超时重传( rdt3.0 )当发送方">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-24T01:01:35.000Z">
-<meta property="article:modified_time" content="2022-02-24T01:39:31.173Z">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/1.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/2.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/3.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/8.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/9.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/4.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/5.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/6.png">
+<meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/7.png">
+<meta property="article:published_time" content="2022-03-25T06:47:11.000Z">
+<meta property="article:modified_time" content="2022-03-25T10:32:32.798Z">
 <meta property="article:author" content="ErikZhang">
-<meta property="article:tag" content="Thymeleaf">
+<meta property="article:tag" content="TCP">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/1.png">
   
   
-  <title>Thymleaf模版技术 - Erik&#39;s blog</title>
+  <title>TCP可靠性知识点归纳(一)-重传机制与滑动窗口 - Erik&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -186,7 +196,7 @@
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
-          <span id="subtitle" title="Thymleaf模版技术">
+          <span id="subtitle" title="TCP可靠性知识点归纳(一)-重传机制与滑动窗口">
             
           </span>
         </div>
@@ -198,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-02-24 12:01" pubdate>
-          2022年2月24日 中午
+        <time datetime="2022-03-25 17:47" pubdate>
+          2022年3月25日 下午
         </time>
       </span>
     
@@ -210,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.7k 字
+          1.8k 字
         
       </span>
     
@@ -221,7 +231,7 @@
         
         
         
-          40 分钟
+          16 分钟
         
       </span>
     
@@ -259,180 +269,66 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Thymleaf模版技术</h1>
+            <h1 style="display: none">TCP可靠性知识点归纳(一)-重传机制与滑动窗口</h1>
             
             <div class="markdown-body">
               
-              <h1 id="Thymleaf模版技术–基础使用"><a href="#Thymleaf模版技术–基础使用" class="headerlink" title="Thymleaf模版技术–基础使用"></a>Thymleaf模版技术–基础使用</h1><p>模版技术 ：<br>jsp是最早的模版， 其数据来自于服务器端，性能较差<br>模版就是一些框架，来做视图层处理，实际上就是用于显示数据的。</p>
-<p>Thymeleaf 可以在web或者非web项目中使用，其基于HTML语言 ， 在此基础上加上了模版引擎语法。在Springboot中集成了模版技术。</p>
-<h2 id="一、，模版配置："><a href="#一、，模版配置：" class="headerlink" title="一、，模版配置："></a>一、，模版配置：</h2><ol>
-<li><p>需要在建立模块的时候选择相应的<strong>模版引擎</strong></p>
-</li>
-<li><p>将要使用的视图模版文件的时候放在resources的templates文件夹下。在controller中以视图的方式访问模版。</p>
-<p> 可以在application.properties 中对模版引擎进行设置，相关依赖：</p>
-<pre><code class="hljs"> &lt;dependency&gt;
-     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-     &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
- &lt;/dependency&gt;
-</code></pre>
-</li>
-<li><p>在application.properties中设置 </p>
-<pre><code class="hljs"> spring.thymeleaf.cache=true  
-</code></pre>
-<p>使用缓存，当用户访问以后，再次访问这个页面的时候，就是从内存中访问。上线之后设为true。但是开发阶段因为要修改模版，所以开发的时候一般设为false</p>
-</li>
-<li><p>设置模版的默认字符集和文件格式：</p>
-<p> 一般默认情况下是用的utf-8与html，可以根据情况在application.properties中进行修改</p>
-<pre><code class="hljs"> spring.thymeleaf.encoding=utf-8
- #模版的类型，默认是html，因为模版就是html文件
- spring.thymekeaf.mode=HTML
-</code></pre>
-</li>
-<li><p>设置模版前缀与后缀： 就是设置模版的视图解析器<br>模版前缀 默认放在classpath:&#x2F;template&#x2F; ， 可以进行修改<br>，修改方式类似视图解析器。在application.properties文件中设置</p>
-<pre><code class="hljs"> spring.thymeleaf.prefix=classpath:/template/
- spring.thymeleaf.suffix=.html
-</code></pre>
-</li>
-</ol>
-<p>表示在Controller中返回视图的逻辑地址的时候是在 &#x2F;src&#x2F;resources&#x2F;template文件夹下，寻找后缀为 .html的文件</p>
-<h2 id="二、模版使用"><a href="#二、模版使用" class="headerlink" title="二、模版使用"></a>二、模版使用</h2><p>模版的语法格式： 就是在html标签的属性前加上 th: 从而可以在html标签中获取服务器返回的数据对象。因为只有加了th 才能被模版引擎处理，但是在前端浏览器打开开发者界面的时候不会显示th</p>
-<p>加th的意义，实际上是让其可以根据后端返回的数据来动态更改html的属性<br>可以在xmlns:th&#x3D;”<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xhtml&quot;">http://www.w3.org/1999/xhtml&quot;</a> 更改，将换成其他的就可以。</p>
+              <p>由于TCP是一种可靠的传输协议(不错，不乱，不丢)，因此一些思想是建立在rdt以及所衍生出的滑动窗口等内容的基础上</p>
+<h2 id="一、重传机制"><a href="#一、重传机制" class="headerlink" title="一、重传机制"></a>一、重传机制</h2><p>由rdt2.0提出，当发送端的数据到达接收端时，接收端要发送一个ACK返回给发送方。当发送方发现数据包丢失的情况时候(收到重复ack或没有收到ack)，会启用重传机制。</p>
+<p>ACK 中会包含期望得到的数据的序列号，与确认应答信息。</p>
+<h3 id="1-1-超时重传-rdt3-0"><a href="#1-1-超时重传-rdt3-0" class="headerlink" title="1.1 超时重传( rdt3.0 )"></a>1.1 超时重传( rdt3.0 )</h3><p>当发送方发送一个数据后，会启动一个定时器，当超过指定时间没有收到对应ACK时，会重发该数据。</p>
+<img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/1.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
+<p>在设置*RTO(超时重传时间)<em>时候，要特别注意对RTO的选择，其值应该略大于</em>RTT(往返时延)*。在实际情况中，RTT是一个动态值，因此RTO也应该是一个动态值</p>
+<p>缺点： 如果重新发送的数据再次超时，则TCP会采用 <em>超时间隔加倍</em> 策略。如果两次都超时，说明此时网络可能已经拥塞，不宜反复发送。</p>
+<h3 id="1-2-快速重传-Fast-Re-transmit"><a href="#1-2-快速重传-Fast-Re-transmit" class="headerlink" title="1.2 快速重传(Fast Re-transmit)"></a>1.2 快速重传(Fast Re-transmit)</h3><p>和超时重传不同，快速重传不以计时器作为重传的触发， 而采用数据驱动重传</p>
+<p>重传触发：<em>当收到3个重复的ACK时，则判定重复ACK中所期望的数据已经丢失</em>。</p>
+<p>缺点： 发送端不知道是否只丢失了ACK所期望的包，还是ACK之后的包全都丢失了。</p>
+<img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/2.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
+<img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/3.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
+
+<p>从图中可以看到，此时接收方没有收到Seq2所对应的数据，因此接收方会返回多个ACK2 来要求重发。<br>此时 <em>Seq3,Seq4,Seq5</em> 的数据包都已经成功到达。根据累计确认的原则，接收方在收到重发的<em>Seq2</em> 后，会返回最后一个成功收到的包 <em>ACK6</em>。</p>
+<p>但是在重传的时候，根据TCP的不同实现（双方端口是否有缓存），可能会只重传<em>Seq2</em> (SR滑动窗口协议), 也可能会重传<em>从Seq2往后的所有数据包</em>(GBN滑动窗口协议)</p>
+<h3 id="1-3-滑动窗口"><a href="#1-3-滑动窗口" class="headerlink" title="1.3 滑动窗口"></a>1.3 滑动窗口</h3><p>在rdt3.0 所提出的 “停等”机制，在RTT较长时会导致数据的传输效率变低，吞吐量变小。<br>因此提出了<em>流水线机制</em> ，发送方会一次行发送多个数据给接收方， 接收方会返回 $最后一个成功接收的数据的ACK$。 而滑动窗口协议就是对流水线机制的一个实现</p>
+<h3 id="1-4-滑动窗口的分类"><a href="#1-4-滑动窗口的分类" class="headerlink" title="1.4 滑动窗口的分类"></a>1.4 滑动窗口的分类</h3><p>滑动窗口可以分为 GBN(Go-Back-N)  与 SR(Selective Repeat) 两种。</p>
 <ol>
-<li><p>表达式：</p>
-<ol>
-<li>标准变量表达式 <br><br> 语法： ${key}</li>
-</ol>
-<p> 作用：获取key对应的文本数据，key是request作用域中的key，对应变量名。可以使用</p>
-<pre><code class="hljs"> request.setAttribute(key,value)
- 或
- model.addAttribute(key,value) 
- 数据放入reqeust作用域
-</code></pre>
-<p> 在html的中使用 属性  th:text&#x3D;”${key}” ， 实际上获取的就是对象，如果访问对象的属性，使用的是set，get方法</p>
-<pre><code class="hljs">  &lt;p th:text=&quot;$&#123;user1&#125;&quot;&gt;对象&lt;/p&gt;
-</code></pre>
-<p> 如果key不存在，则会使用 “” 空字符串将标签中的文本内容进行替代</p>
-<ol start="2">
-<li>选择变量表达式（星号变量表达式）<br> 语法： *{key}<br> 作用：获取key对应的数据， 注意 ， *{key}不能单独使用，要和 th:object 一起使用，来获取对象的属性值。并且简化 ${key} 每次取出对象属性都要写 ‘ user. ‘的耦合性。</li>
-</ol>
-<p> 注意，只能在th:object 的标签内部使用该对象的属性，标签外无法使用</p>
-<pre><code class="hljs"> &lt;div th:object=&quot;$&#123;user2&#125;&quot;&gt;   首先在div中要获取这个对象
-     然后在标签中通过* 来使用对象的属性
-     &lt;p th:text=&quot;*&#123;id&#125;&quot;&gt;id&lt;/p&gt;&lt;br&gt;
-     &lt;p th:text=&quot;*&#123;name&#125;&quot;&gt;姓名&lt;/p&gt;&lt;br&gt;
-     &lt;p th:text=&quot;*&#123;age&#125;&quot;&gt;年龄&lt;/p&gt;&lt;br&gt;
- &lt;/div&gt;
-</code></pre>
-<ol start="3">
-<li><p>链接表达式（URL表达式）</p>
-<p> 语法： @{url} <br><br> 作用：表示链接， 可以对一下的类型使用，链接可以是绝对地址也可以是相对地址，适用于<br><br> <script src="">,<link href = ""> <a href=""> <form action=""> <img src =""><br> 链接绝对路径</p>
-<pre><code class="hljs"> &lt;a th:href=&quot;@&#123;http://www.baidu.com&#125;&quot;&gt;链接到百度&lt;/a&gt;
-</code></pre>
-<p> 链接相对路径 ， 注意开头有无 / 的区别</p>
-<pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryAccount&#125;&quot;&gt;相对地址，没有参数&lt;/a&gt;
-</code></pre>
-<p> 链接相对路径，用字符串传递参数</p>
-<pre><code class="hljs"> &lt;a th:href=&quot;@&#123;&#39;/tpl/queryAccount?id=&#39;+$&#123;userid&#125;&#125;&quot;&gt;相对地址，将参数缝合在url中传输，从model中获取&lt;/a&gt;
-</code></pre>
-<p> 然而字符串拼接的传参方式并不是很推荐,推荐使用一下几种方式</p>
-<ol>
-<li><p>使用() 传参数</p>
-<pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryAccount(id=$&#123;userid&#125;)&#125;&quot;&gt;使用() 传参数&gt;&lt;/a&gt;
-</code></pre>
-</li>
-<li><p>使用() 传递多个参数，参数名字要与后端接受的参数名一致</p>
-<pre><code class="hljs"> &lt;a th:href=&quot;@&#123;/tpl/queryUser(name=&#39;lisi&#39;,age=&#39;20&#39;)&#125;&quot;&gt;使用() 传多个参数&gt;&lt;/a&gt;
-</code></pre>
-</li>
+<li>GBN协议的特点：<ol>
+<li>累计确认： 返回最后一个成功到达的数据的ACK</li>
+<li>乱序丢弃： GBN的接收方是没有缓存的，因此如果收到的数据不是上一个ACK期望的数据，接收方会直接丢弃这个数据，并重新确认按序到达的序列最大的数据，将其ACK返回。<br>GBN乱序丢弃的特点，导致了可能会造成大量的重发分组，从而增加网络压力</li>
 </ol>
 </li>
+<li>SR协议：<ol>
+<li>在GBN的基础上增加了缓存机制，从而缓存乱序到达的分组</li>
+<li>发送方为每个分组设置定时器，且只需要重传没有收到ACK的分组即可，避免了大量重传的问题。这是通过对收到的分组序列号排序所实现的。</li>
+<li>发送方的窗口由N个连续的序列号组成，并且限制已发送且未确认的分组数量</li>
+<li>当SR协议接收到乱序的分组时，接收方的滑动窗口不会向后移动，直到所有缺失的分组都收到以后，才会整体向右滑动  <img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/8.png" srcset="/img/loading.gif" lazyload class="" title="[图 5]"></li>
 </ol>
 </li>
-<li><p>属性： 属性是放在html元素中，实际上就是html的属性，只不过加上了th前缀。属性作用不变，只不过加上th以后，属性值会由模版引擎处理，让其可以使用变量表达式。比如：</p>
-<pre><code class="hljs"> &lt;form action=&quot;/login&quot; method=&quot;post&quot;&gt;&lt;/form&gt;
-</code></pre>
-<p> 也可以写成</p>
-<pre><code class="hljs"> &lt;form th:action=&quot;/login&quot; th:method=&quot;$&#123;method&#125;&quot;&gt;&lt;/form&gt;
- 获取服务器返回的method变量的值，并作为属性值使用
-</code></pre>
-</li>
-<li><p>each循环， 可以循环List，Array，Map</p>
-<p> 语法： th:each="集合循环成员，循环状态变量 : ${key}"</p>
-<p> 在html的标签中使用, 其中 集合循环成员，循环状态变量 是可以自定义名称，而且循环状态变量可以不定义<br> 有点类似于foreach，注意，each用在哪个标签上，<strong>哪个标签以及其包裹的内容</strong> 就会循环出现n次</p>
-<pre><code class="hljs"> &lt;div th:each=&quot;集合循环成员，循环状态变量 : $&#123;key&#125;&quot;&gt;
-     &lt;p th:text=&quot;$&#123;集合循环成员&#125;&quot;&gt;&lt;/p&gt;
- &lt;/div&gt;
-</code></pre>
-<p> 循环状态变量 默认名字是 集合循环成员+State。通过该变量可以获得以下信息</p>
-<pre><code class="hljs"> index: 当前迭代对象的索引
- count: 当前迭代对象的数量，已经迭代了多少个，从1开始计算
- size:  被迭代的对象大小，即 集合中有多少对象
- current：当前迭代变量
- even/odd : 当前所在的是偶数？奇数？
- first：判断是否是一个迭代
- last: 判断是否是最后一个迭代
-</code></pre>
-<p> 注意： 在遍历Map的时候 有 对象.key,对象.value。这个对象就是当前遍历到的map中的kv对象</p>
-</li>
-<li><p>判断条件 if ; unless </p>
-<p> 表达式符号和java中一样，比如== ， 注意，空字符串被认为是true，null被认为false</p>
-<pre><code class="hljs"> &lt;div th:if = &quot;$&#123;表达式&#125;&quot; &gt; 文本内容 &lt;/div&gt;      如果表达式中结果为true，则显示标签体的内容，否则不显示
- &lt;div th:unless = &quot;$&#123;表达式&#125;&quot; &gt; 文本内容&lt;/div&gt;   与if相反，除了表达式相等的情况，其他都显示标签体中的内容
-</code></pre>
-</li>
-<li><p>switch , case 使用方法和java一样，但是所有的case只有一个能匹配成功，匹配成功了才显示标签内的内</p>
-<pre><code class="hljs"> &lt;div th:switch=&quot;要比对的值&quot;&gt;
-     &lt;p th:case=&quot;值1&quot;&gt; 结果1 &lt;/p&gt;
-     &lt;p th:case=&quot;*&quot;&gt; 默认结果 &lt;/p&gt;
- &lt;/div&gt;
-</code></pre>
-</li>
-<li><p>内联   th:inline 三个取值类型：<strong>text , javascript, none</strong><br> 不用依赖于html标签，直接显示。 </p>
-<pre><code class="hljs"> &lt;p th:text=&quot;&quot;&gt; 而这种形式这是依赖于html的
-</code></pre>
-<ol>
-<li><p>内联text : 在html标签外获取表达式的值, 可以直接在标签内容后面显示获取的变量值，而不会替代表达式内容<br> 语法：</p>
-<pre><code class="hljs"> &lt;div th:inline=&quot;text&quot;&gt;
- &lt;p&gt; 显示姓名是 ： [[$&#123;key&#125;]] &lt;/p&gt;
- &lt;/div&gt;
-</code></pre>
-</li>
-<li><p>内联javascript : 在 js语句中获取数据, 也可以在事件中使用js方法</p>
-</li>
+<li>SR协议的困境问题</li>
 </ol>
+<p>当缓存区能用的序列号小于滑动窗口的窗口大小时，会产生困境问题。当接收方的ACK在传输过程中丢失，并且此时序列号在同一窗口内被复用，这会导致接收方无法区分不同的分组。</p>
+<img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/9.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
+
+<p>因此序列号空间大小与窗口尺寸应该满足：<br>$$发送方窗口尺寸+接收方窗口尺寸 &lt;&#x3D; 总序列号可用范围$$<br>   $$即 N_S+N_R &lt;&#x3D; 2^k$$</p>
+<h3 id="1-5-滑动窗口的结构"><a href="#1-5-滑动窗口的结构" class="headerlink" title="1.5 滑动窗口的结构"></a>1.5 滑动窗口的结构</h3><ol>
+<li><p>窗口实现： 操作系统上开辟的一个缓存空间，发送方主机在收到接收方的应答之前，必须将发送未确认的数据保留在缓存区中。 如果在指定时间内收到了确认应答ACK，则可以将数据从缓存区中清除。</p>
 </li>
-<li><p>字面量： 包括<strong>数字类型， 文本类型，boolean类型</strong><br> 可以在</p>
-<pre><code class="hljs"> th:text&quot;&quot; 中使用&#39;&#39; 单引号来将 字面量 和 表达式 区分开
- &lt;p th:text=&quot;&#39;我是&#39;+ $&#123;sex&#125; + &#39;人&#39;&quot;&gt;
- 或者
- 字符串链接 使用| 字符串+ 表达式| 效果一样
- &lt;p th:text=&quot;|我是 $&#123;sex&#125;  人|&quot;&gt;
-</code></pre>
+<li><p>累计确认： 在滑动窗口中，发送方和接收方采用累计确认的原则。</p>
+<img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/4.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
 </li>
-<li><p>运算符： 正常的运算符，但是需要在${} 中使用</p>
-<pre><code class="hljs"> gt,lt,ge,le, 代表 &gt; , &lt; ,&gt;= ,&lt;=
- eq ,  nq 代表 ==  ， ！=
-</code></pre>
-<p> 也可以进行多元表达式 </p>
-<pre><code class="hljs"> a &lt; b ? 1 : 2  其中a  ， b 也可以为表达式，可以嵌套
-</code></pre>
+<li><p>窗口大小： 该信息被放在TCP的头部字段中，叫做window。 该信息是由接收端返回给发送端的ACK中，告知发送端目前接收端的缓存区域大小，从而让发送方控制每次发送数据的大小。</p>
 </li>
-<li><p>内置对象,可以看Thymeleaf的文档来看更多的内置对象</p>
-<ol>
-<li><p>基本对象</p>
-<pre><code class="hljs"> #request：HttpServletRequest
- #session：HttpSession
- 直接使用session 也可以表示HttpSession 对象，是#session 的简单方式
- 可以在模版中直接使用
- $&#123;param&#125; 获取请求对象的参数列表，其实使用方法和servlet中使用的方法是一样的
-</code></pre>
+<li><p>发送方每次发送的数据不能超过接收方窗口大小，否则接收方无法正常接收数据，造成丢包。</p>
 </li>
-<li><p>内置的工具类功能，可以看Thymeleaf的文档来看更多的内置工具类对象的使用方法（和java类似。<br> 使用的时候注意，在${ }里面的内容，在对象方法中调用变量的时候不需要再写${}</p>
-<pre><code class="hljs"> #dates  $
-</code></pre>
+<li><p>如果发送方确认到接收方的窗口大小为0，在接收到新的ACK通知接收方窗口有余量之前，发送方停止向接收方发送数据。</p>
 </li>
-</ol>
+<li><p>发送窗口结构<br>发送并确认、发送未确认、未发送但在对方处理范围内、未发送且超过接收方处理能力</p>
+ <img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 5]">
+<p> 当发送方确认到接收方的ACK后，会将窗口往右滑动，释放缓存资源</p>
+ <img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/6.png" srcset="/img/loading.gif" lazyload class="" title="[图 5]">
 </li>
+<li><p>接收窗口结构<br>已成功接收并确认、未收到但可以收到的数据(窗口大小) 、未收到且超出处理能力的数据</p>
+ <img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/7.png" srcset="/img/loading.gif" lazyload class="" title="[图 5]"></li>
 </ol>
 
               
@@ -445,7 +341,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Thymeleaf/">#Thymeleaf</a>
+        <a href="/tags/TCP/">#TCP</a>
       
     </div>
   
@@ -457,8 +353,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Thymleaf模版技术</div>
-      <div>http://example.com/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/</div>
+      <div>TCP可靠性知识点归纳(一)-重传机制与滑动窗口</div>
+      <div>http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/</div>
     </div>
     <div class="license-meta">
       
@@ -470,7 +366,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年2月24日</div>
+          <div>2022年3月25日</div>
         </div>
       
       
@@ -500,18 +396,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" title="TCP可靠性知识点归纳(一)-重传机制与滑动窗口">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TCP可靠性知识点归纳(一)-重传机制与滑动窗口</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/02/24/SpringBoot-%E6%89%93%E5%8C%85/" title="SpringBoot--打包">
-                        <span class="hidden-mobile">SpringBoot--打包</span>
+                      <a href="/2022/02/24/Thymleaf%E6%A8%A1%E7%89%88%E6%8A%80%E6%9C%AF/" title="Thymleaf模版技术">
+                        <span class="hidden-mobile">Thymleaf模版技术</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
