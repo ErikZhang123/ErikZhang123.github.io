@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/6.png">
 <meta property="og:image" content="http://example.com/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/7.png">
 <meta property="article:published_time" content="2022-03-25T06:47:11.000Z">
-<meta property="article:modified_time" content="2022-03-25T10:32:32.798Z">
+<meta property="article:modified_time" content="2022-03-25T10:35:40.275Z">
 <meta property="article:author" content="ErikZhang">
 <meta property="article:tag" content="TCP">
 <meta name="twitter:card" content="summary_large_image">
@@ -77,7 +77,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -309,7 +309,7 @@
 <p>当缓存区能用的序列号小于滑动窗口的窗口大小时，会产生困境问题。当接收方的ACK在传输过程中丢失，并且此时序列号在同一窗口内被复用，这会导致接收方无法区分不同的分组。</p>
 <img src="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/9.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
 
-<p>因此序列号空间大小与窗口尺寸应该满足：<br>$$发送方窗口尺寸+接收方窗口尺寸 &lt;&#x3D; 总序列号可用范围$$<br>   $$即 N_S+N_R &lt;&#x3D; 2^k$$</p>
+<p>因此序列号空间大小与窗口尺寸应该满足：<br>$$发送方窗口尺寸+接收方窗口尺寸 &lt;&#x3D; 总序列号可用范围$$<br>$$即 N_S+N_R &lt;&#x3D; 2^k$$</p>
 <h3 id="1-5-滑动窗口的结构"><a href="#1-5-滑动窗口的结构" class="headerlink" title="1.5 滑动窗口的结构"></a>1.5 滑动窗口的结构</h3><ol>
 <li><p>窗口实现： 操作系统上开辟的一个缓存空间，发送方主机在收到接收方的应答之前，必须将发送未确认的数据保留在缓存区中。 如果在指定时间内收到了确认应答ACK，则可以将数据从缓存区中清除。</p>
 </li>
@@ -457,6 +457,12 @@
   
 
 
+  
+  
+
+
+
+
 
 
 
@@ -552,6 +558,21 @@
   </script>
 
 
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
 
@@ -687,6 +708,44 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        MathJax = {
+          tex    : {
+            inlineMath: { '[+]': [['$', '$']] }
+          },
+          loader : {
+            load: ['ui/lazy']
+          },
+          options: {
+            renderActions: {
+              findScript    : [10, doc => {
+                document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                  const display = !!node.type.match(/; *mode=display/);
+                  const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                  const text = document.createTextNode('');
+                  node.parentNode.replaceChild(text, node);
+                  math.start = { node: text, delim: '', n: 0 };
+                  math.end = { node: text, delim: '', n: 0 };
+                  doc.math.push(math);
+                });
+              }, '', false],
+              insertedScript: [200, () => {
+                document.querySelectorAll('mjx-container').forEach(node => {
+                  let target = node.parentNode;
+                  if (target.nodeName.toLowerCase() === 'li') {
+                    target.parentNode.classList.add('has-jax');
+                  }
+                });
+              }, '', false]
+            }
+          }
+        };
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.0/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 
