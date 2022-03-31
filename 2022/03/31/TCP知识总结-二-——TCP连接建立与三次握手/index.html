@@ -16,14 +16,13 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、三次握手TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。     以上的三次交互，就是TCP的三次握手 第一次握手 客户端 和 服务端都处于 CLOSED 状态。 服务端 首先开启监听端口，监听是否有客户端的访问请求，因此服务端进入 LISTEN 状态。 客户端 随机初始化序号(client_isn)。 并将这个序号置于TCP头部的 序号字段中，同时">
+    <meta name="description" content="一、三次握手TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。  &amp;#123;% asset_img 1.png [图 1] %&amp;#125;  以上的三次交互，就是TCP的三次握手 第一次握手 客户端 和 服务端都处于 CLOSED 状态。 服务端 首先开启监听端口，监听是否有客户端的访问请求，因此服务端进入 LISTEN 状态。 客户端 随机初始化序号(">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP知识总结(二)——TCP连接建立与三次握手">
 <meta property="og:url" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="一、三次握手TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。     以上的三次交互，就是TCP的三次握手 第一次握手 客户端 和 服务端都处于 CLOSED 状态。 服务端 首先开启监听端口，监听是否有客户端的访问请求，因此服务端进入 LISTEN 状态。 客户端 随机初始化序号(client_isn)。 并将这个序号置于TCP头部的 序号字段中，同时">
+<meta property="og:description" content="一、三次握手TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。  &amp;#123;% asset_img 1.png [图 1] %&amp;#125;  以上的三次交互，就是TCP的三次握手 第一次握手 客户端 和 服务端都处于 CLOSED 状态。 服务端 首先开启监听端口，监听是否有客户端的访问请求，因此服务端进入 LISTEN 状态。 客户端 随机初始化序号(">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/1.png">
 <meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/2.png">
 <meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/3.png">
 <meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/4.png">
@@ -36,10 +35,10 @@
 <meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/11.png">
 <meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/12.png">
 <meta property="article:published_time" content="2022-03-31T04:52:41.000Z">
-<meta property="article:modified_time" content="2022-03-31T07:18:19.072Z">
+<meta property="article:modified_time" content="2022-03-31T07:27:55.629Z">
 <meta property="article:author" content="ErikZhang">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/1.png">
+<meta name="twitter:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/2.png">
   
   
   <title>TCP知识总结(二)——TCP连接建立与三次握手 - Erik&#39;s blog</title>
@@ -275,37 +274,51 @@
             
             <div class="markdown-body">
               
-              <h2 id="一、三次握手"><a href="#一、三次握手" class="headerlink" title="一、三次握手"></a>一、三次握手</h2><p>TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。<br>     <img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/1.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"><br>以上的三次交互，就是TCP的三次握手</p>
+              <h2 id="一、三次握手"><a href="#一、三次握手" class="headerlink" title="一、三次握手"></a>一、三次握手</h2><p>TCP是面向连接的，因此在使用前，必须先建立TCP连接。而TCP连接是通过三次握手来进行的。</p>
+<pre><code class="hljs"> &#123;% asset_img 1.png [图 1] %&#125;
+</code></pre>
+<p>以上的三次交互，就是TCP的三次握手</p>
 <h2 id="第一次握手"><a href="#第一次握手" class="headerlink" title="第一次握手"></a>第一次握手</h2><ol>
 <li>客户端 和 服务端都处于 CLOSED 状态。</li>
 <li>服务端 首先开启监听端口，监听是否有客户端的访问请求，因此服务端进入 LISTEN 状态。</li>
 <li>客户端 随机初始化序号(client_isn)。 并将这个序号置于TCP头部的 <em>序号</em>字段中，同时将TCP头部字段中的SYN标志位置为1（表示此报文为SYN报文）</li>
 <li>客户端发送第一个SYN报文，表示向服务端发起连接，该报文不包含应用层的数据。</li>
-<li>客户端变为 SYN-SENT ， SYN已发送状态。 <img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/2.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
-<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/3.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+<li>客户端变为 SYN-SENT ， SYN已发送状态。</li>
 </ol>
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/2.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/3.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
+
 <h2 id="第二次握手"><a href="#第二次握手" class="headerlink" title="第二次握手"></a>第二次握手</h2><ol>
 <li>服务端接收到客户端发送的SYN报文</li>
 <li>服务端随机初始化自己的序号(server_isn)，并将序号放入TCP头部字段的 <em>序号</em>字段</li>
 <li>服务端将 client_isn+1 作为ACK(确认应答号)填入TCP头部</li>
 <li>服务端 将 TCP头部中 SYN和ACK标志置为1.</li>
 <li>发送该报文返回给客户端， 此报文不包含应用层数据。</li>
-<li>服务器进入 SYN_RECV 状态<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/4.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+<li>服务器进入 SYN_RECV 状态</li>
 </ol>
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/4.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
 <h2 id="第三次握手"><a href="#第三次握手" class="headerlink" title="第三次握手"></a>第三次握手</h2><p> 客户端接收到服务端报文后，还需要向服务端返回一个应答报文。</p>
 <ol>
 <li>客户端 置TCP首部ACK标志位为1.</li>
 <li>客户端 在TCP首部的确认应答号ACK处，填入 server_isn + 1 </li>
 <li>如果有需要发送的数据，此时放入在TCP头部的数据部分。</li>
 <li>客户端进入 <strong>ESTABLISHED</strong> 状态。</li>
-<li>服务端接收到报文， 也进入<strong>ESTABLISHED</strong> 状态。<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+<li>服务端接收到报文， 也进入<strong>ESTABLISHED</strong> 状态。</li>
 </ol>
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
+
 <h1 id="TCP连接为什么一定是三次握手？"><a href="#TCP连接为什么一定是三次握手？" class="headerlink" title="TCP连接为什么一定是三次握手？"></a>TCP连接为什么一定是三次握手？</h1><h2 id="一、-防止客户端连续发送的SYN造成混乱"><a href="#一、-防止客户端连续发送的SYN造成混乱" class="headerlink" title="一、 防止客户端连续发送的SYN造成混乱"></a>一、 防止客户端连续发送的SYN造成混乱</h2><p>当一个客户连续发送了多次SYN 建立连接报文。 由于网络堵塞等原因，会造成 <em>【旧的SYN】 比 【新的SYN】 先到达了服务端</em>。</p>
 <ol>
 <li>当服务端收到 【旧SYN】 ， 会根据【旧SYN】中携带的 client_isn 返回一个带有 client_isn + 1 的ACK</li>
 <li>此时由于客户端已经发送了【新SYN】，所以当客户端收到了 对于 【旧SYN】的ACK时，客户端通过上下文会发现，这个ACK并不是我想要的，它是一个对历史连接的回应。</li>
-<li>于是客户端会发送一个 RST 报文， 中断连接。<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/6.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+<li>于是客户端会发送一个 RST 报文， 中断连接。</li>
 </ol>
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/6.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+
 <h3 id="那为什么一定是三次？如果两次会有什么结果？"><a href="#那为什么一定是三次？如果两次会有什么结果？" class="headerlink" title="那为什么一定是三次？如果两次会有什么结果？"></a>那为什么一定是三次？如果两次会有什么结果？</h3><p>对当前这个问题而言，如果只有两次握手<strong>即客户端发送一次，服务端返回一次）</strong>。 如果不进行第三次握手（<strong>即客户端不判断从服务端返回的ACK是否对应了最新发送的连接请求</strong>）这就客户端无法判断是否当前的连接是一个历史连接。如果无脑用，则会导致传输数据错误。</p>
 <h2 id="二、同步双方初始化序列号SYN"><a href="#二、同步双方初始化序列号SYN" class="headerlink" title="二、同步双方初始化序列号SYN"></a>二、同步双方初始化序列号SYN</h2><p>SYN作为可靠性传输的一个关键因素，起作用主要包括</p>
 <ol>
@@ -325,7 +338,7 @@
 <li>同步双方初始化序列号，从而保证不重复，不丢弃，不乱序</li>
 </ol>
 <p>两次握手： 无法解决历史连接问题，造成资源浪费，也无法同步初始化序列号<br>四次握手： 三次握手已经足够可靠，四次握手增加了包丢失的几率，没有必要且浪费了资源。</p>
-<h2 id="ISN-初始化"><a href="#ISN-初始化" class="headerlink" title="ISN 初始化"></a>ISN 初始化</h2><ol>
+<h2 id="ISN（Initial-Sequence-Number）-初始化"><a href="#ISN（Initial-Sequence-Number）-初始化" class="headerlink" title="ISN（Initial Sequence Number） 初始化"></a>ISN（Initial Sequence Number） 初始化</h2><ol>
 <li><p>ISN相同会导致的问题：<br>如果一个已经失效的连接被重新使用了，如果有历史报文残留在网络中。<br>那么如果 <em>旧报文的序列号 与 新报文的序列号相同</em> 那么无法分辨出接收到的序列号是否是历史序列号，如果历史报文被新的连接接受了，并且作为新报文使用，则会出现数据错乱的情况。</p>
 </li>
 <li><p>ISN非重初始化的目的:</p>
@@ -427,8 +440,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/" title="TCP知识总结(一)——TCP基础“">
-                        <span class="hidden-mobile">TCP知识总结(一)——TCP基础“</span>
+                      <a href="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/" title="TCP知识总结(一)——TCP基础">
+                        <span class="hidden-mobile">TCP知识总结(一)——TCP基础</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
