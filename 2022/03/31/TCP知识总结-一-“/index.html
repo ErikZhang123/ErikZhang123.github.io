@@ -16,27 +16,26 @@
   <meta name="author" content="ErikZhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、流量控制与拥塞控制的区别首先要注意，流量控制与拥塞控制的本质区别在于： 流量控制针对的是端对端传输，是发送方根据接收方的实际接收能力，调整发送的数据量。避免了发送方浪费资源和性能。 拥塞控制是对于整个网络来说的，其目的是为了防止 发送方 无休止的发送数据包，从而整个网络都被发送方数据所占据，导致整体的网络通道拥挤。 二、操作系统缓冲区与滑动窗口的关系发送窗口和接收窗口的数据都存放在终端的操作系">
+    <meta name="description" content="一、 TCP概述IP协议是网络层的一个协议，但是IP协议是不可靠的，不能保证数据的完整性，有序性，可靠性。因此需要在传输层中是用TCP来保证数据的可靠性。 TCP 是一个 传输层的可靠数据传输服务，保证数据包的不坏、不乱、不丢。     TCP的特点是：  面向连接： TCP的链接是一对一的，端对端的； 与UDP不同，UDP可以通过一个主机的一个进程向多个主机发送消息（无连接分用）。但是TCP必须">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TCP可靠性知识总结（二）——流量控制与拥塞控制">
-<meta property="og:url" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/index.html">
+<meta property="og:title" content="TCP知识总结(一)——TCP基础“">
+<meta property="og:url" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/index.html">
 <meta property="og:site_name" content="Erik&#39;s blog">
-<meta property="og:description" content="一、流量控制与拥塞控制的区别首先要注意，流量控制与拥塞控制的本质区别在于： 流量控制针对的是端对端传输，是发送方根据接收方的实际接收能力，调整发送的数据量。避免了发送方浪费资源和性能。 拥塞控制是对于整个网络来说的，其目的是为了防止 发送方 无休止的发送数据包，从而整个网络都被发送方数据所占据，导致整体的网络通道拥挤。 二、操作系统缓冲区与滑动窗口的关系发送窗口和接收窗口的数据都存放在终端的操作系">
+<meta property="og:description" content="一、 TCP概述IP协议是网络层的一个协议，但是IP协议是不可靠的，不能保证数据的完整性，有序性，可靠性。因此需要在传输层中是用TCP来保证数据的可靠性。 TCP 是一个 传输层的可靠数据传输服务，保证数据包的不坏、不乱、不丢。     TCP的特点是：  面向连接： TCP的链接是一对一的，端对端的； 与UDP不同，UDP可以通过一个主机的一个进程向多个主机发送消息（无连接分用）。但是TCP必须">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/1.png">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/2.png">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/3.png">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/4.png">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/5.png">
-<meta property="og:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/5.png">
-<meta property="article:published_time" content="2022-03-27T09:13:06.000Z">
-<meta property="article:modified_time" content="2022-03-27T12:31:28.475Z">
+<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/5.png">
+<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/1.png">
+<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/2.png">
+<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/3.png">
+<meta property="og:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/4.png">
+<meta property="article:published_time" content="2022-03-31T03:48:34.000Z">
+<meta property="article:modified_time" content="2022-03-31T04:51:43.015Z">
 <meta property="article:author" content="ErikZhang">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/1.png">
+<meta name="twitter:image" content="http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/5.png">
   
   
-  <title>TCP可靠性知识总结（二）——流量控制与拥塞控制 - Erik&#39;s blog</title>
+  <title>TCP知识总结(一)——TCP基础“ - Erik&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -192,7 +191,7 @@
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
-          <span id="subtitle" title="TCP可靠性知识总结（二）——流量控制与拥塞控制">
+          <span id="subtitle" title="TCP知识总结(一)——TCP基础“">
             
           </span>
         </div>
@@ -204,8 +203,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-03-27 20:13" pubdate>
-          2022年3月27日 晚上
+        <time datetime="2022-03-31 14:48" pubdate>
+          2022年3月31日 下午
         </time>
       </span>
     
@@ -216,7 +215,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.7k 字
+          1.4k 字
         
       </span>
     
@@ -227,7 +226,7 @@
         
         
         
-          23 分钟
+          12 分钟
         
       </span>
     
@@ -265,85 +264,48 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">TCP可靠性知识总结（二）——流量控制与拥塞控制</h1>
+            <h1 style="display: none">TCP知识总结(一)——TCP基础“</h1>
             
             <div class="markdown-body">
               
-              <h2 id="一、流量控制与拥塞控制的区别"><a href="#一、流量控制与拥塞控制的区别" class="headerlink" title="一、流量控制与拥塞控制的区别"></a>一、流量控制与拥塞控制的区别</h2><p>首先要注意，流量控制与拥塞控制的本质区别在于：</p>
-<p>流量控制针对的是<strong>端对端传输</strong>，是发送方根据接收方的实际接收能力，调整发送的数据量。避免了发送方浪费资源和性能。</p>
-<p>拥塞控制是对于<strong>整个网络来说的</strong>，其目的是为了防止 <strong>发送方</strong> 无休止的发送数据包，从而整个网络都被发送方数据所占据，导致整体的网络通道拥挤。</p>
-<h2 id="二、操作系统缓冲区与滑动窗口的关系"><a href="#二、操作系统缓冲区与滑动窗口的关系" class="headerlink" title="二、操作系统缓冲区与滑动窗口的关系"></a>二、操作系统缓冲区与滑动窗口的关系</h2><p>发送窗口和接收窗口的数据都存放在终端的操作系统 <strong>内存缓冲区</strong> 中，而缓冲区是会被操作系统调整的(剩余缓存的大小反映了处理能与的强弱)</p>
-<p>一般会有以下两种情形造成缓存区变得很小，或没有缓存区而导致<strong>窗口关闭</strong></p>
+              <h2 id="一、-TCP概述"><a href="#一、-TCP概述" class="headerlink" title="一、 TCP概述"></a>一、 TCP概述</h2><p>IP协议是网络层的一个协议，但是IP协议是不可靠的，不能保证数据的完整性，有序性，可靠性。因此需要在传输层中是用TCP来保证数据的可靠性。</p>
+<p>TCP 是一个 <strong>传输层</strong>的可靠数据传输服务，保证数据包的不坏、不乱、不丢。<br>    <img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></p>
+<p>TCP的特点是：</p>
 <ol>
-<li><p>应用程序没有及时读取缓存：</p>
-<p> 接收方在成功接收了数据之后，接收方的应用没有及时从缓冲区中获取数据，那么发送过来的数据就会存储在缓存区中。这会导致接收方的窗口不断变小，直到缓存区完全被数据填满以后，窗口关闭。<br> 即，当<br> $$ 接收方应用获取数据的速度 &lt; 发送方传输数据的速度 $$</p>
- <img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/1.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
-</li>
-<li><p>接收方系统资源非常紧张</p>
-<p> 这会导致接收方在接受到数据的时候无法立刻返回 <strong>携带接收方窗口大小的ACK</strong> 给发送方。<br> 这就导致发送方在没有收到新的窗口大小的情况下发送数据，此时发送的数据大小很可能已经大于了接收方的窗口大小。<br> 导致接收方无法处理数据包，从而丢弃数据包。</p>
-<p> 更重要的是，在发送方发送了数据包以后收到了 <strong>延迟到达的ACK</strong> ， 此时发送方如果想调整窗口大小，会导致窗口大小变成负值。<br> <img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/2.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]"><br> 为了防止这种情况，TCP规定</p>
-<p> <strong>不允许同时减少缓存且收缩窗口，只能先收缩窗口，过段时间再减少缓存</strong></p>
-</li>
+<li>面向连接： TCP的链接是一对一的，端对端的； 与UDP不同，UDP可以通过一个主机的一个进程向多个主机发送消息（无连接分用）。但是TCP必须通过多线程&#x2F;进程 对多个主机进行连接以后才能 ‘一对一’地发起通信</li>
+<li>可靠的：无论网络中出现了怎样的链路变化，TCP可以保证一个报文一定能到达接收端。（重传机制保证其可靠性）</li>
+<li>字节流：对重复的数据报文会自动丢弃，并且保证了数据分组的有序性。</li>
 </ol>
-<h2 id="三、窗口关闭的死锁"><a href="#三、窗口关闭的死锁" class="headerlink" title="三、窗口关闭的死锁"></a>三、窗口关闭的死锁</h2><p>当缓冲区的窗口大小为0时，发送方会停止传输数据，直到接收方返回一个ACK来通告空闲窗口大小。</p>
-<p>但是，当接收方窗口大小为0，并且向发送方发送了<strong>关闭窗口</strong>的通告以后，如果没有给发送方发送空闲窗口大小，<br>或者空闲窗口的ACK在传输过程中丢失了，那么</p>
-<p><strong>接收方一直等待发送方的空闲窗口ACK， 而发送方一直等待接收方的传输数据</strong></p>
-<p>这种情况就叫做窗口关闭的死锁<br>    <img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/3.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></p>
-<ol>
-<li><p>解决方法(窗口探测报文 Window probe)<br> 窗口探测实际上就是使用了定时器的思想。 TCP为每个连接设置一个持续的定时器，如果TCP连接中有一方收到了0窗口通告，计时器就会启动。</p>
-<p> 如果计时器超时，则会发送探测报文，询问接收方是否有空闲的窗口大小用来接收发送方的数据。<br> 接收方在返回的时候就会返回当前接收窗口的大小。</p>
-<p> 窗口探测一般会探测3次，如果三次之后发现接收方依然是0窗口状态，则会中断TCP链接</p>
-</li>
-</ol>
-<h2 id="四、糊涂窗口综合症"><a href="#四、糊涂窗口综合症" class="headerlink" title="四、糊涂窗口综合症"></a>四、糊涂窗口综合症</h2><p>虽然通过窗口探测报文解决了窗口关闭死锁问题，但是又出现了一个新问题。</p>
-<p>如果接收方一旦有一点点缓存空间就发送ACK报文告诉发送方，那么通知的窗口会非常小（这里的非常小指的是窗口大小 &lt; MSS 大小，MSS默认为536字节），<br>此时就算只有几个字节，发送方也会告诉接收方 “可以发送了”。</p>
-<p>MSS的定义: 最大分段数据长度，是TCP报文段中数据段的长度，并不包含TCP的首部字段。 MSS在TCP连接建立的时候定义，用于确定双方能收发的最大报文段长度。一般会以接收方 &#x2F; 发送方 提供的MSS的最小值确定这个值。<br>$$MSS &#x3D; TCP报文段长度 - TCP首部长度$$</p>
-<p>此时就会产生SWS（发送方传输很慢，或接收方处理缓冲区速度很慢，或者两者都有）。<br>因为此时应用进程之间传输的报文数据量很小，甚至小于传输开销（TCP头部字段有40字节，有效载荷可能小于头部字段大小）<br>            <img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/4.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]"></p>
-<ol>
-<li><p>让接收方不通告小窗口给发送方，当接收方的缓存区窗口小于某个阈值 (即MSS与 1&#x2F;2缓存空间 中的较小值)，就会发送0窗口通告，阻止发送方发送数据。当缓存区中的窗口大小经过处理以后大于了MSS，则打开窗口。</p>
-</li>
-<li><p>让发送方避免发送小数据，使用Nagle算法尽量发送大块数据，避免网络中存在着许多小数据块。</p>
-<ol>
-<li>Nagle算法： 在任意时刻，最多只能由一个 <strong>未被确认(发送了但没有收到ACK)</strong> 的 **小段(小于MSS尺寸的数据块)**。</li>
-</ol>
-<p> 在发送数据的时候先把数据存入缓存，直到累计到了一定数量的数据才发送。</p>
-<p> 或者当发送端明确收到了未确认数据的ACK，才发送当前数据（因为已经发送的数据大小也满足了最小值，所以当已经发送的数据被确认，那么根据确认信息也就可以知道对方窗口大小了）</p>
-</li>
-</ol>
-<h2 id="五、拥塞控制"><a href="#五、拥塞控制" class="headerlink" title="五、拥塞控制"></a>五、拥塞控制</h2><p>当网络出现拥塞时依然发送大量数据包，则会导致数据丢失，延迟。此时TCP会重传数据，从而导致恶循环，加重网络拥塞。</p>
-<p>TCP协议是一个无私的协议，当他检测到网络发生拥塞时，会自我牺牲，减少发送的数据量。</p>
-<ol>
-<li><p>拥塞窗口 cwnd&#x2F; CongWin</p>
-<p> cwnd 是由<strong>发送方</strong>维护的变量，会根据网络的拥塞程度动态变化。<br> 当网络中没有拥塞，cwnd会增大 ； 当网络中出现拥塞 cwnd就减少</p>
-</li>
-<li><p>拥塞检测</p>
-<p> 表现为分组丢失或分组延迟过大。当发送方没有在规定时间内接收到ACK报文，即发生超时重传时，则认为网络出现了拥塞。</p>
-<p> 或者当接收方连续收到 <em>三个相同的ACK</em> 即发生拥塞</p>
-</li>
-<li><p>拥塞控制算法</p>
-<p> TCP拥塞控制的原理就是动态的调整发送速率，有两种方法来调整cnwd</p>
-<ol>
-<li>加性增——乘性减： AIMD （也叫拥塞避免算法）</li>
-</ol>
-<p>增加发送速率的时候要稳健，一点点增加，谨慎地探测带宽。</p>
-<p>Additive Increase:： 每个RTT将cwnd 增大<em>一个MSS</em><br>Multiplicative Decrease: 当发生拥塞后，cwnd直接减半 或 减少到1 ，以此减少发送速率。</p>
-<ol>
-<li>慢启动 Slow Start</li>
-</ol>
-<p> 当TCP初始化链接的时候， cnwd会被初始化为1， 但此时可用的带宽可能会远远大于cnwd的大小，如果此时依然使用AIMD， 那么cnwd增加的速度就太慢了。<br> 因此我们希望cnwd在刚开始的时候能够快速增加，直到<strong>某个阈值后再实施AIMD</strong>。<br>             <img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]"><br> 慢启动门限 ssthresh ：限制慢启动的一个状态变量，当$cnwd &lt; ssthresh$ 启用SS。 当$cnwd &gt; ssthresh$ 则使用AIMD算法。</p>
-</li>
-<li><p>拥塞发生后的处理方式</p>
-</li>
-</ol>
-<p>给予AIMD，拥塞发生后由于要快速减少cwnd，但是在MD的过程中会产生两种情况</p>
-<p>1）当发生了 <strong>超时重传</strong> 则会使用<strong>拥塞发生算法</strong></p>
-<p>如果发生超时重传，说明此时网络中拥塞已经非常严重了，所以必须迅速降低cwnd<br>$$慢启动门限 ssthresh 设为 cwnd&#x2F;2$$<br>$$cwnd重置为1$$<br>然后开始执行 <strong>慢启动SS</strong>，但是慢启动的反应太过激烈，会造成网络卡顿<br>2） 快速恢复 Fast Recovery</p>
-<p>如果发生了快速重传（收到了三个重复的ACK） ， 此时说明网络的拥塞还不是那么严重，至少还能收到ACK。<br>那么</p>
-<p>$$慢启动门限 ssthresh 设为 cwnd&#x2F;2$$<br>$$cwnd 也设为 自身的一半 cwnd&#x2F;2$$<br>然后开始执行拥塞避免算法AIDM，后续cnwd会线性增长。</p>
-<img src="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/5.png" srcset="/img/loading.gif" lazyload class="" title="[图 2]">
+<p>因此我们说，TCP是一个面向连接的，可靠的，基于字节流的传输层通信协议。</p>
+<h2 id="二、-TCP头部字段的结构"><a href="#二、-TCP头部字段的结构" class="headerlink" title="二、 TCP头部字段的结构"></a>二、 TCP头部字段的结构</h2><p>TCP字段分为两个部分 ： 头部字段以及数据字段。</p>
+<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/1.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
 
-
-
+<ol>
+<li>序列号（SYN sychronize Sequence Numbers）：在 <strong>建立连接</strong>时由接收和发送双方随即选择的序列号。 序列号是数据段segment中的<em>第一个字节的编号</em>，如果将一个segment拆成两个，那么序列号也会跟着变化。 </li>
+<li>确认应答号（ACK: Acknowledge character）: ACK 用于解决丢包的问题，ACK中返回的是 <em>希望下一次接收到的数据段的序列号</em>，发送端根据ACK的回复，来确认，在ACK序列号之前的所有数据段都被成功接收了（累计确认原则）。</li>
+<li>控制位：<img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/2.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+</ol>
+<h2 id="三、-TCP连接的基础"><a href="#三、-TCP连接的基础" class="headerlink" title="三、 TCP连接的基础"></a>三、 TCP连接的基础</h2><p>TCP 连接的主要作用是维护一些与 <strong>可靠性、流量控制相关的变量</strong>， 比如 Socket， 序列号，窗口大小。</p>
+<ol>
+<li><p>确定连接</p>
+<p> TCP通过是通过一个 <strong>四元组</strong>来确定一个唯一链接</p>
+ <img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/3.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]">
+<p> 其中 ：<br> 源地址与目的地址为 <em>32位</em>， 保存在<strong>IP数据报头部</strong>， 是协助 网络层的IP协议发送报文给对方主机，在路由中进行转发的时候使用的。</p>
+<p> 源端口号与源地址为 <em>16位</em>, 保存在 <strong>TCP头部中</strong> ， 作用是让主机知道应该把这个数据报文发给哪个端口(进程).</p>
+</li>
+<li><p>最大连接数</p>
+<p>TCP连接中，服务器会在某个端口上进行监听，如果收到来自其他主机的TCP链接请求，服务器会创建一个新的Socket来处理请求，并同时保留原本的监听Socket用以接收后序的来自其他主机的TCP访问请求(Socket中的accpet)。<br>这样的优点是：使服务器端的 <strong>目标端口和目标地址固定</strong>。</p>
+<p>理论最大： 不进行限制，客户端能发多少连接，全都发送<br> $$<br> 最大TCP连接数 &#x3D; 客户端的IP数 * 客户端的端口数<br> $$</p>
+<p>但是一个服务器不可能同时处理无穷个TCP连接，有一些实际约束来限制TCP连接的数量</p>
+</li>
+<li><p>对连接数量的实际约束<br> 从TCP四元组入手进行限制</p>
+<ol>
+<li>限制源端口号的资源：通过ip_local_port_range 修改端口范围 （发送方限制）</li>
+<li>限制目标端口的资源和目标IP地址</li>
+</ol>
+<p> 从其他方面限制：<br>3. 限制文件描述符资源： 因为每个进程可以打开的文件描述符有限，可通过修改单个进程可打开的文件描述符数量做出修改。<br>4. 线程资源： 因为每建立一个TCP就会创建一个新的线程，如果线程数不断增大，就会引发C10K问题，导致建立连接的时间花费越来越大。但是这个问题可以通过IO多路复用解决： 即一个线程处理管理多个TC连接资源，减少总线程数量<br>5. 内存限制： 对每个TCP连接而言，主机都需要分配给他们一定的内存空间，作为缓冲区。 解决方法： 杀死某些特别占内存的进程<br>6. CPU资源： 一旦CPU占用率长时间为100%，则无法执行其他指令，此时尝试重启。</p>
+ <img src="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/4.png" srcset="/img/loading.gif" lazyload class="" title="[图 1]"></li>
+</ol>
 
               
             </div>
@@ -360,8 +322,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>TCP可靠性知识总结（二）——流量控制与拥塞控制</div>
-      <div>http://example.com/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/</div>
+      <div>TCP知识总结(一)——TCP基础“</div>
+      <div>http://example.com/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/</div>
     </div>
     <div class="license-meta">
       
@@ -373,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年3月27日</div>
+          <div>2022年3月31日</div>
         </div>
       
       
@@ -403,9 +365,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%80-%E2%80%9C/" title="TCP知识总结(一)——TCP基础“">
+                      <a href="/2022/03/31/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%BA%8C-%E2%80%94%E2%80%94TCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title="TCP知识总结(二)——TCP连接建立与三次握手">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TCP知识总结(一)——TCP基础“</span>
+                        <span class="hidden-mobile">TCP知识总结(二)——TCP连接建立与三次握手</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -413,8 +375,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/03/25/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E7%82%B9%E5%BD%92%E7%BA%B3(%E4%B8%80)_%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" title="TCP可靠性知识点归纳(一)-重传机制与滑动窗口">
-                        <span class="hidden-mobile">TCP可靠性知识点归纳(一)-重传机制与滑动窗口</span>
+                      <a href="/2022/03/27/TCP%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" title="TCP可靠性知识总结（二）——流量控制与拥塞控制">
+                        <span class="hidden-mobile">TCP可靠性知识总结（二）——流量控制与拥塞控制</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
