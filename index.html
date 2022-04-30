@@ -214,6 +214,46 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/04/30/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E5%9B%9B-%E2%80%94%E2%80%94TCP%E4%B8%8ESocket/" target="_self">
+          TCP知识总结(四)——TCP与Socket
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/04/30/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E5%9B%9B-%E2%80%94%E2%80%94TCP%E4%B8%8ESocket/" target="_self">
+          
+          一、 TCP连接建立流程   服务器和客户端分别通过 socket() 初始化，得到文件描述符。 服务端调用 bind() 将应用绑定到 IP地址和端口， 被绑定的端口才可以被监听。 服务端调用 listen() 对已经绑定的端口进行监听。 服务端调用 accpet() 等待客户端的连接请求。 客户端通过 connect() 向服务端发起连接请求 服务端 accpet 收到TCP连接建立请求，并与
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-04-30 15:59" pubdate>
+              2022-04-30
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Socket/">#Socket</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/04/30/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%89-%E2%80%94%E2%80%94TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/" target="_self">
           TCP知识总结(三)——TCP四次挥手
         </a>
@@ -222,7 +262,7 @@
       <p class="index-excerpt">
         <a href="/2022/04/30/TCP%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93-%E4%B8%89-%E2%80%94%E2%80%94TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/" target="_self">
           
-          TCP连接的断开需要四次挥手  一、四次挥手过程 主动关闭方发送一个FIN&#x3D;1的报文给服务端，并且客户端进入FIN_WAIT_1 状态 服务端在收到FIN报文后会首先返回一个ACK，告诉客户端我正确收到了FIN报文，并且服务端进入CLOSE_WAIT状态，而客户端此时进入FIN_WAIT_2状态。在CLOSE_WAIT状态时，服务端会处理当前客户端没有处理完的数据，因为此时通道还没有关闭
+          TCP连接的断开需要四次挥手  一、四次挥手过程 主动关闭方发送一个FIN&#x3D;1的报文给服务端，并且客户端进入FIN_WAIT_1状态 服务端在收到FIN报文后会首先返回一个ACK，告诉客户端我正确收到了FIN报文，并且服务端进入CLOSE_WAIT状态，而客户端此时进入FIN_WAIT_2状态。在CLOSE_WAIT状态时，服务端会处理当前客户端没有处理完的数据，因为此时通道还没有关闭，
         </a>
       </p>
 
@@ -556,67 +596,6 @@
           </div>
         
         
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/" target="_self">
-          SpringBoot-基础使用(三)-数据库相关
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/02/23/SpringBoot-%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8-%E4%B8%89/" target="_self">
-          
-          SpringBoot-基础使用(三) 数据库相关一、Mybatis的使用 在建立的时候需要加入Mybatis框架，以及MySQL Driver驱动 mybatis-spring 依赖，来继承mybatis  创建dao接口和mapper文件, 创建方法和Mybatis一样 注意：mapper文件要和接口文件名字一致  方法1: 接口上添加@Mapper注解 &#x2F;**SpringBoot中需要使用Ma
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-02-23 23:59" pubdate>
-              2022-02-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/SpringBoot/" class="category-chain-item">SpringBoot</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Springboot/">#Springboot</a>
-            
-          </div>
         
       </div>
     </article>
